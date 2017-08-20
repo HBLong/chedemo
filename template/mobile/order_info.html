@@ -1,0 +1,185 @@
+{template 'header'}
+<div class="top-fixed">
+    <span class="pull-left"><a href="javascript:history.go(-1)" style="color:#333;"><i class="fa fa-chevron-left" style="margin-right:15px;"></i>订单详情</a></span>
+</div>
+<div class="container" style="padding-top: 60px;">
+    <style>
+        body { background-color: #f0f0f0;}
+        .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th{ vertical-align: middle;}
+        .label { border-radius: 0;font-weight: 500;padding:5px 15px;}
+        .order_box .line { padding:0;}
+  </style>
+    {if $writeOffQrcodeUrl}
+    <div class="text-center writeoff">
+        <img src="{$writeOffQrcodeUrl}" class="img-thumbnail" />
+        <p>该二维码用于核销，上车时给检票人员扫描</p>
+    </div>
+    {/if}
+    <form action='{php echo __MURL("order", array("act" => "pay"));}' method="post" >
+        <div class="order_box  margin-bottom-10">
+            <div style="background-color: white;padding:10px;margin:10px 0;">
+                <span class="icon_bus"></span>{$shift['start_station']['name']}
+                <span class="icon_arrow-left"></span>
+                <span class="icon_bus"></span>{$shift['end_station']['name']}
+                <p class="text-center" style="font-size:12px; color: #666;margin:10px;">{$fr_cp_settings['vehicle_type'][$shift['vehicle_type']]}</p>
+            </div>
+            <div style="background-color: white;padding:10px;margin:10px 0;">
+            <div class="clearfix line">
+                <label>发车时间：</label>
+                <span style="padding:0">
+                    {php echo timeToStr($order_info['departure_time'], 'Y-m-d');} 星期{php echo getChineseWeek($order_info['departure_time']);}  {php echo timeToStr($order_info['departure_time'], 'H:i');}
+                </span>
+            </div>
+            </div>
+            <div style="background-color: white;padding:10px;margin:10px 0;">
+            <div class="clearfix line">
+                <div class="pull-left col-xs-3" style="padding:0">购票数量：</div>
+                <div class="pull-right col-xs-9" style="padding:0">
+                    <span class="text-red">{$order_info['number']}</span>张
+                </div>
+            </div>
+            </div>
+            <div style="background-color: white;padding:10px;margin:10px 0;">
+            <div class="clearfix line">
+                <div class="pull-left col-xs-3" style="padding:0">座位号：</div>
+                <div class="pull-right col-xs-9" style="padding:0">
+                    {$order_info['seat_number']}
+                </div>
+            </div>
+            </div>
+            <div style="background-color: white;padding:10px;margin:10px 0;">
+            <div class="clearfix line">
+                <div class="pull-left col-xs-3" style="padding:0">订单总额：</div>
+                <div class="pull-right col-xs-9" style="padding:0">
+                    <span class="text-red">￥{$order_info['price']}</span>
+                    {if $order_info['voucher_id'] > 0}
+                    <span>(已使用{$voucher['name']})</span>
+                    {/if}
+                </div>
+            </div>
+            </div>
+            <div style="background-color: white;padding:10px;margin:10px 0;">
+            <div class="clearfix line">
+                <div class="pull-left col-xs-3" style="padding:0">订单号：</div>
+                <div class="pull-right col-xs-9" style="padding:0">
+                    {$order_info['order_sn']}
+                </div>
+            </div>
+            </div>
+            <div style="background-color: white;padding:10px;margin:10px 0;">
+            <div class="clearfix line">
+                <div class="pull-left col-xs-3" style="padding:0">订单状态：</div>
+                <div class="pull-right col-xs-9" style="padding:0">
+                    {if $order_info['status'] == 0}
+                        <span class="label label-warning">待付款</span>
+                    {elseif $order_info['status'] == 1}
+                        <span class="label label-success">购票成功</span>
+                    {elseif $order_info['status'] == 2}
+                        <span class="label label-default">已退票</span>
+                    {else}
+                        <span class="label label-danger">取消预定</span>
+                    {/if}
+                </div>
+            </div>
+            </div>
+            <div style="background-color: white;padding:10px;margin:10px 0;">
+            <div class="clearfix line">
+                <div class="pull-left col-xs-3" style="padding:0">购票人姓名：</div>
+                <div class="pull-right col-xs-9" style="padding:0">
+                    {$order_info['name']}
+                </div>
+            </div>
+            </div>
+            <div style="background-color: white;padding:10px;margin:10px 0;">
+            <div class="clearfix line">
+                <div class="pull-left col-xs-3" style="padding:0">联系方式：</div>
+                <div class="pull-right col-xs-9" style="padding:0">
+                    {$order_info['phone']}
+                </div>
+            </div>
+            </div>
+            {if $route['insurance'] == 1}
+            <div style="background-color: white;padding:10px;margin:10px 0;">
+            <div class="clearfix line">
+                <div class="pull-left col-xs-3" style="padding:0">身份证号码：</div>
+                <div class="pull-right col-xs-9" style="padding:0">
+                    {$order_info['idcard']}
+                </div>
+            </div>
+            </div>
+            {/if}
+            {if $route['explain']}
+            <div style="background-color: white;padding:10px;margin:10px 0;">
+            <div class="clearfix line" style="height:auto;">
+                <div>重要通知：</div>
+                <p style="line-height:1.8;">{php echo nl2br($route['explain']);}</p>
+            </div>
+            </div>
+            {/if}
+        </div>
+        
+        <input name="order_id" type="hidden" value="{$order_info['id']}" />
+        <input name="token" type="hidden" value="{$_W['token']}" />
+        {if $order_info['status'] == 0}
+            {if $shift['method'] == 0}
+            <p>
+                <button type="submit" name="submit" class="btn btn-warning btn-block" value="立即支付">立即支付</button>
+            </p>
+            <p>
+                <a class="btn btn-danger btn-block" href="{php echo __MURL('order', array('act' => 'cancel', 'order_id' => $order_info['id']))}">取消订单</a>
+            </p>
+            {/if}
+            {if $shift['method'] == 1}
+            <p>
+                <a class="btn btn-danger btn-block"  data-toggle="modal" data-target=".bs-example-modal1-sm" href="javascript:;">取消订单</a>
+            </p>
+            {/if}
+        {/if}
+        {if $order_info['status'] == 1 && $shift['refund_ticket'] == 1 && false}
+        <p>
+            <a class="btn btn-danger btn-block btn-dp btn-lg" data-toggle="modal" data-target=".bs-example-modal-sm" href="javascript:;">申请退票</a>
+        </p>
+        {/if}
+    </form>
+</div>
+{if $order_info['status'] == 1 && $shift['refund_ticket'] == 1 && false}
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" style="z-index:901219">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="mySmallModalLabel">退票说明</h4>
+            </div>
+            <div class="modal-body">
+                {php echo nl2br($fr_cp_settings['content2']);}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a class="btn btn-primary btn-dp" href="{php echo __MURL('order', array('act' => 'refund_ticket', 'order_id' => $order_info['id']))}">确定退票</a>
+            </div>
+        </div>
+    </div>
+ </div>
+{/if}
+
+{if $order_info['status'] == 0}
+<div class="modal fade bs-example-modal1-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" style="z-index:901219">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                确认要取消此订单吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a class="btn btn-primary btn-dp" href="{php echo __MURL('order', array('act' => 'cancel', 'order_id' => $order_info['id']))}">好</a>
+            </div>
+        </div>
+    </div>
+</div>
+{/if}
+
+
+
+
+{template 'footerbar_user'}
+{template 'footer'}

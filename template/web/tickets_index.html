@@ -1,0 +1,82 @@
+{template 'common/header'}
+<style type="text/css">
+.big-menu, .navbar-static-top, .footer{display:none;}
+</style>
+<script>
+    var d = {php echo json_encode($d); };
+</script>
+<link href="{__CSS__}/tickets.css" rel="stylesheet" />
+<div class="main-wrap">
+    <form action="{php echo __WURL('tickets', array('act' => 'query'))}" class="form-inline searchboxinput" role="form" autocomplete="off" method="get">
+        <input type="hidden" name="c" value="site">
+        <input type="hidden" name="a" value="entry">
+        <input type="hidden" name="do" value="tickets">
+        <input type="hidden" name="act" value="query">
+        <input type="hidden" name="m" value="fr_cp" />
+        <input type="hidden" name="start_station_id" value="{$_GPC['start_station_id']}" />
+        <input type="hidden" name="end_station_id" value="{$_GPC['end_station_id']}" />
+        <div class="form-group s-inputbox">
+            <label for="startCityName">出发城市：</label>
+            <input required type="text" class="form-control s-input s-ihover" value="{php echo $_GPC['startCityName']}" id="startCityName" name="startCityName" placeholder="输入中文/拼音">
+        </div>
+        <div class="form-group s-inputbox">
+            <label for="endCityName">到达城市：</label>
+            <input required type="text" class="form-control s-input s-ihover" value="{php echo $_GPC['endCityName']}" id="endCityName" name="endCityName" placeholder="输入中文/拼音">
+        </div>
+        <div class="form-group">
+            <label for="startDate">发车日期：</label>
+            <input type="text" value="{$start_date}" class="form-control" id="startDate" name="startDate">
+        </div>
+        <button type="submit" class="btn btn-default"><i class="fa fa-search"></i>查询</button>
+    </form>
+    <div class="hot">
+        <h3>热门路线</h3>
+        <p class="clearfix">
+        {loop $hot_route $route}
+        <a href="{php echo __WURL('tickets', array('act' => 'query', 'start_station_id' => $route['start_station']['id'], 'end_station_id' => $route['end_station']['id']));}">
+            {$route['start_station']['name']} -> {$route['end_station']['name']}
+        </a>
+        {/loop}
+        </p>
+    </div>
+</div>
+<div id="cityToolBar" class="sug" style="position: absolute; z-index: 9998; width: 228px; height: 220px; display: none;"></div>
+<script src="{__JS__}/underscore.js"></script>
+<script src="{__JS__}/citys.js"></script>
+<script type="text/javascript">
+    $("#startCityName").citys({
+        url: '{php echo __WURL("tickets", array("act" => "endCitys"))}'
+    });
+    $(function() {
+        $(".main-wrap").parent().addClass("col-xs-12 col-sm-12 col-lg-12").removeClass("col-sm-9 col-lg-10");
+    });
+    require(["datetimepicker"], function() {
+        $(function() {
+            var option = {
+                lang: "zh",
+                step: "10",
+                timepicker: false,
+                closeOnDateSelect: false,
+                minDate: '{php echo date("Y-m-d")}',
+                maxDate: '{$end_date}',
+                formatDate: "Y-m-d",
+                format: "Y-m-d",
+            };
+            $("#startDate").datetimepicker(option);
+        });
+    });
+</script>
+<script type="text/template" id="endCitys-template">
+    <ul>
+    <p>输入中文/拼音/或↑↓键选择</p>
+    <% _.each(data, function(city,index,obj) {%>
+    <% if(index== 0){%>
+    <li class="hover" title="<%=city.name%>"><i><%=city.name%></i><b><%=city.provinceName%></b></li>
+    <%}else{%>
+    <li title="<%=city.name%>"><i><%=city.name%></i><b><%=city.provinceName%></b></li>
+    <%}%>
+    <%});%>	
+    </ul>
+</script>
+{template 'common/footer'}
+{template 'web/tips'}

@@ -1,0 +1,74 @@
+{template 'common/header'}
+<div class="main">
+	<ul class="nav nav-tabs">
+            <li><a href="{php echo __WURL($fr_model, array('pid' => $pid));}">{php echo $fr_web_page_title[$fr_model]}列表</a></li>
+            <li class="active"><a href="{php echo __WURL($fr_model, array('act' => 'add', 'pid' => $pid));}">添加{php echo $fr_web_page_title[$fr_model]}</a></li>
+	</ul>
+    
+    <div class="">
+	<form action="" class="form-horizontal form" method="post">
+		<input type="hidden" name="id" value="{$item['id']}">
+		<input type="hidden" name="token" value="{$_W['token']}" />
+		<input type="hidden" name="act" value="update" />
+		<div class="panel panel-default">
+                        <div class="panel-heading" id="paoject_info">
+                            {if !empty($id)}修改{else}添加{/if}{php echo $fr_web_page_title[$fr_model]}信息
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">所属车站</label>
+                                    <div class="col-sm-8">
+                                        <select name="postdata[station_id]" class="form-control">
+                                            {loop $station $station_item}
+                                            <option value="{$station_item['id']}" {if $station_item['id'] == $item['station_id']} selected{/if}>{$station_item['name']}</option>
+                                            {/loop}
+                                        </select>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">车牌号</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="postdata[license_plate]" value="{$item['license_plate']}" />
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">司机姓名</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="postdata[driver_name]" value="{$item['driver_name']}" />
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">司机电话</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="postdata[driver_phone]" value="{$item['driver_phone']}" />
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">座位数</label>
+                                    <div class="col-sm-8">
+                                        <input type="number" class="form-control" name="postdata[seat_numbers]" value="{$item['seat_numbers']}" />
+                                    </div>
+				</div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">车辆类型</label>
+                                    <div class="col-sm-8">
+                                        <select name="postdata[vehicle_type]" class="form-control">
+                                            {loop $fr_cp_settings['vehicle_type'] $key $vehicle_type}
+                                            <option value="{$key}" {if $key == $item['vehicle_type']} selected="selected"{/if}>{$vehicle_type}</option>
+                                            {/loop}
+                                        </select>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">&nbsp;</label>
+                                    <div class="col-sm-9">
+                                        <button type="submit" class="btn btn-primary col-lg-1" name="submit" value="提交">提交</button>
+                                    </div>
+				</div>
+			</div>
+		</div>
+	</form>
+    </div>
+</div>
+{template 'common/footer'}
+{template 'web/tips'}

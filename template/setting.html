@@ -1,0 +1,198 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{url 'profile/module/setting' array('m' => 'fr_cp')}">系统设置</a></li>
+        <li><a href="{php echo __WURL('print');}">车票打印设置</a></li>
+        <li><a href="{php echo __WURL('notice');}">管理员通知设置</a></li>
+        <li><a href="{php echo __WURL('writeoff');}">核销人员设置</a></li>
+        <li><a href="{php echo __WURL('fee');}">退票/改签设置</a></li>
+    </ul>
+    <form class="form-horizontal form" id="form2" action="" method="post">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <a class="center-block text-muted" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">基础参数配置</a>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">模板消息ID</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input type="text" value="{$settings['templateid']}" class="form-control" name="config[templateid]">
+                                <span class="help-block">请在“微信公众平台”选择行业为：“交通工具 - 汽车相关”，添加标题为：”购买车票通知“，编号为：“OPENTM202425938”的模板</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">温馨提示</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <textarea class="form-control" name="config[content3]" rows="5">{$settings['content3']}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-2 control-label">最大订票天数</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control input-medium" name="config[day]" value="{$settings['day']}" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-2 control-label">首页显示推荐路线数</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control input-medium" name="config[recommend_size]" value="{$settings['recommend_size']}" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-2 control-label">自动取消未付款订单</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control input-medium" name="config[auto_cancel_order]" value="{$settings['auto_cancel_order']}" />
+                                <span class="help-block">自动取消超过N分钟没有成功付款的订单,设置为0不自动取消未付款订单</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-2 control-label">核销关键词</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control input-medium" name="config[writeoff]" value="{$settings['writeoff']}" />
+                                <span class="help-block">例如：关键词设为“核销车票”，可在公众号里面发送关键词“核销车票0316225542”核销车票，0316225542车票订单号</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-2 control-label">客服电话</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control input-medium" name="config[service_phone]" value="{$settings['service_phone']}" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">汽车等级</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <textarea class="form-control" name="config[vehicle_type]" rows="8">{$settings['vehicle_type']}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">购票须知</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <textarea class="form-control" name="config[content]" rows="8">{$settings['content']}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">退票说明</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <textarea class="form-control" name="config[content2]" rows="8">{$settings['content2']}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <a class="collapsed center-block text-muted" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">短信提醒配置</a>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启短信接口</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class='radio-inline'><input type="radio" name="config[sms_type]" value="0"  {if $settings['sms_type'] == 0} checked="true" {/if} onclick="$('.sms').hide();"> 关闭短信提醒</label>
+                                <label class='radio-inline'><input type="radio" name="config[sms_type]" value="1" {if $settings['sms_type'] == 1} checked="true" {/if} onclick="$('.sms').show();$('.diy_sms').hide();">微擎短信接口</label>
+                                <label class='radio-inline'><input type="radio" name="config[sms_type]" value="2" {if $settings['sms_type'] == 2} checked="true" {/if} onclick="$('.sms').show();">自定义短信接口</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户购票短信通知</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class='radio-inline'><input type="radio" name="config[sms_buy_order]" value="0"  {if $settings['sms_buy_order'] == 0} checked="true" {/if}> 关闭</label>
+                                <label class='radio-inline'><input type="radio" name="config[sms_buy_order]" value="1" {if $settings['sms_buy_order'] == 1} checked="true" {/if}>开启</label>
+                            </div>
+                        </div>
+                        <div class="form-group sms diy_sms" {if $settings['sms_type'] != 2}style="display: none;"{/if}>
+                             <label class="col-xs-12 col-sm-2 control-label">短信接口企业id</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control input-medium" name="config[sms_userid]" value="{$settings['sms_userid']}" />
+                                <span class="help-block">接口联系www.suibianlu.com</span>
+                            </div>
+                        </div>
+                        <div class="form-group sms diy_sms" {if $settings['sms_type'] != 2}style="display: none;"{/if}>
+                             <label class="col-xs-12 col-sm-2 control-label">短信接口用户帐号</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control input-medium" name="config[sms_account]" value="{$settings['sms_account']}" />
+                            </div>
+                        </div>
+                        <div class="form-group sms diy_sms" {if $settings['sms_type'] != 2}style="display: none;"{/if}>
+                             <label class="col-xs-12 col-sm-2 control-label">短信接口帐号密码</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control input-medium" name="config[sms_password]" value="{$settings['sms_password']}" />
+                            </div>
+                        </div>
+                        <div class="form-group sms" {if $settings['sms_type'] == 0}style="display: none;"{/if}>
+                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">接收手机号码</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <textarea class="form-control" name="config[sms_mobile]" rows="5">{$settings['sms_mobile']}</textarea>
+                                <span class="help-block">一行一个手机号码</span>
+                            </div>
+                        </div>
+                        <div class="form-group sms" {if $settings['sms_type'] == 0}style="display: none;"{/if}>
+                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">余票通知短信内容</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <textarea class="form-control" name="config[sms_content]" rows="3">{$settings['sms_content']}</textarea>
+                                <span class="help-block">路线：{{LUXIAN}}；发车时间：{{SHIJIAN}}；余票：{{YUPIAO}}；</span>
+                            </div>
+                        </div>
+                        <div class="form-group sms" {if $settings['sms_type'] == 0}style="display: none;"{/if}>
+                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">余票达到多少提醒</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <textarea class="form-control" name="config[yupiao]" rows="5">{$settings['yupiao']}</textarea>
+                                <span class="help-block">可设置多次提醒，每行设置一个数字，余票等于该数字是会发送短信通知</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!--            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingThree">
+                    <a class="collapsed center-block text-muted" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">车票打印配置</a>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启车票打印</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class='radio-inline'><input type="radio" name="config[print_type]" value="0"  {if $settings['print_type'] == 0} checked="true" {/if} onclick="$('.print').hide();"> 关闭</label>
+                                <label class='radio-inline'><input type="radio" name="config[print_type]" value="1" {if $settings['print_type'] == 1} checked="true" {/if} onclick="$('.print').show();">开启</label>
+                            </div>
+                        </div>
+                        <div class="form-group print" {if $settings['print_type'] == 0}style="display: none;"{/if}>
+                             <label class="col-xs-12 col-sm-2 control-label">用户ID</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control input-medium" name="config[print_partner]" value="{$settings['print_partner']}" />
+                                <span class="help-block">打印设备联系www.suibianlu.com</span>
+                            </div>
+                        </div>
+                        <div class="form-group print" {if $settings['print_type'] == 0}style="display: none;"{/if}>
+                             <label class="col-xs-12 col-sm-2 control-label">API 密钥</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control input-medium" name="config[print_apiKey]" value="{$settings['print_apiKey']}" />
+                            </div>
+                        </div>
+                        <div class="form-group print" {if $settings['print_type'] == 0}style="display: none;"{/if}>
+                             <label class="col-xs-12 col-sm-2 control-label">终端号</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control input-medium" name="config[print_machine_code]" value="{$settings['print_machine_code']}" />
+                            </div>
+                        </div>
+                        <div class="form-group print" {if $settings['print_type'] == 0}style="display: none;"{/if}>
+                             <label class="col-xs-12 col-sm-2 control-label">密钥</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control input-medium" name="config[print_mKey]" value="{$settings['print_mKey']}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+
+        </div>
+        <div class="form-group col-sm-12">
+            <input name="token" type="hidden" value="{$_W['token']}" />
+            <input type="submit" class="btn btn-primary col-lg-1" name="submit" value="提交" />
+        </div>
+    </form>
+</div>
+{template 'common/footer'}

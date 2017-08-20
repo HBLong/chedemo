@@ -1,0 +1,553 @@
+body{ color: #333;}
+.btn { border-radius: 0;}
+.form-control { border-radius: 0;border:none;-webkit-box-shadow: inset 0 0 0 rgba(0,0,0,.075);box-shadow: inset 0 0 0 rgba(0,0,0,.075);margin:5px;width:98%;}
+.index_route a{ float: left; margin: 5px;}
+.area_station_box, .dp_date_box{ position: fixed; top: 0; left: 0; width: 100%;  height: 100%; background: #FFF; z-index: 992222299; display: none;}
+.area_station_box .area_station_box_head, .dp_date_box .dp_date_box_head{ position: relative; height: 40px; width: 100%; background: #FF5722; overflow: hidden;
+                                                                          padding: 10px 0;}
+.area_station_box .area_station_box_head .area_station_box_close, .dp_date_box .dp_date_box_head .dp_date_box_close{ 
+    font-size: 14px; padding:0px 15px; 
+    color: #FFF;
+}
+.area_station_box .area_station_box_head h2, .dp_date_box .dp_date_box_head h2{ text-align: center; font-size: 16px;}
+.area_station_box dl{}
+.area_station_box dl dt{ cursor: default; border-bottom: 1px #FF5722 solid; margin-top: 20px;height:34px;}
+.area_station_box dl dt > span{ color: #fff; background:  #FF5722; padding: 5px 10px;height:34px; display: inline-block;}
+.area_station_box dl dd{ height: 42px; line-height: 42px; color: #999; cursor: pointer; text-indent: 15px; margin: 0 0 0 5%; border-bottom: 1px #CCC solid;}
+/*.area_station_box dl dd:nth-child(even){ background-color: rgba(34, 160, 227, 0.22);}
+.area_station_box dl dd:nth-child(odd){ background-color: rgba(34, 160, 227, 0.13);}*/
+.area_station_box dl dd a{ color: #999;}
+.area_station_box_content, .dp_date_box_content{ overflow: auto; height: 500px;}
+.shift_time{ padding: 0 5px; font-size: 16px;}
+.shift_start, .shift_end{ width: 16px; height: 16px; font-size: 12px; padding: 3px; background: #ff6600; color: #FFF;}
+.shift_end{ background: #428bca;}
+.btn-dp{ background: #ff6600; border-color: #ff6600;}
+.btn-dp:hover, .btn-dp:focus, .btn-dp:active, .btn-dp.active, .open > .dropdown-toggle.btn-dp {
+    background-color: #ff6600;
+    border-color: #ff6600;
+}
+
+.dp_date_box dl{ padding: 0 5%;}
+.dp_date_box dl dd{ height: 42px; line-height: 42px; color: #999; cursor: pointer; text-align: center; font-size: 18px;}
+.dp_date_box dl dd:nth-child(even){ background-color: rgba(34, 160, 227, 0.22);}
+.dp_date_box dl dd:nth-child(odd){ background-color: rgba(34, 160, 227, 0.13);}
+.text-red{ color: red;}
+.text-666{ color: #666;}
+.margin-bottom-10{ margin-bottom: 10px;}
+.order_checkout{
+    color: #333;
+    margin-top: 10px;
+    padding: 0 10px;
+}
+.order_checkout p{
+    height: auto;
+}
+.order_checkout .shift_start, .order_checkout .shift_end{
+    width: 24px; height: 24px; font-size: 16px; padding: 2px 4px; margin-right: 8px;
+}
+.order_checkout .station{
+    font-size: 16px;
+}
+.order_checkout .vehicle_type{
+    font-size: 16px;
+    color: #666;
+}
+.order_checkout .time{
+    font-size: 16px;
+}
+.order_box{ 
+    /*    border: 1px #ccc solid;
+        border-radius: 15px;*/
+}
+.order_box .line{ 
+    border-bottom: 1px #ccc dotted;/*
+    height: 36px;
+    line-height: 36px;
+    padding: 0 5%;*/
+}
+.order_box .line.bornone, .order_box .line:last-child { 
+    border-bottom: none;
+}
+
+.order_buy_box{ 
+    position: fixed; 
+    bottom: 0;
+    left: 0;
+    width: 100%;/*
+    border-top: 1px #CCC solid;*/
+    background: #FFF;
+}
+.order_total_price{
+    float: left;
+    width: 50%;
+    display: inline-block;
+    height: 65px;
+    line-height: 65px;
+    font-size: 16px;
+    text-indent: 1em;
+}
+.order_buy_btn{
+    float: right;
+    width: 50%;
+    display: inline-block;
+    border-radius: 0;
+    font-size: 18px;
+    height: 65px;
+}
+.order_buy_btn span{
+    font-size: 16px;
+}
+.voucher_container{
+    padding: 5%;
+}
+.voucher_row{
+    border: 1px #333 solid;
+    height: 90px;
+    color: #ff9900;
+}
+.voucher_row .discount{
+    border-right: 1px #333 solid;
+    height: 90px;
+    line-height: 90px;
+    color: #ff9900;
+    font-size: 36px;
+}
+.voucher_row .discount.free{
+    font-size: 28px;
+}
+.voucher_info {
+    padding: 15px 15px 10px;
+}
+.voucher_info .title{
+    font-size: 20px;
+}
+.voucher_info .restrict{
+    font-size: 13px;
+    white-space: nowrap;
+    text-overflow: clip;
+}
+.voucher_info .end_time{
+    font-size: 11px;
+    color: #999;
+}
+
+.dp-index-form{ 
+    border: 1px solid #e4e4e4;
+    /*border-radius: 5px;*/
+    padding: 15px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+.dp-index-form a{
+    font-size: 16px;
+    color: #000;
+    position: relative;
+    display: block;
+}
+.dp-index-form a .title{
+    color:#333;
+    font-size: 18px;
+    padding: 10px 0 0 5px;
+    margin: 0;
+}
+.dp-index-form a > .pull-right{display:inline-block; font-size:28px; line-height:0; color:#999; position:absolute; right:15px; top:50%; margin-top: -14px; height: 28px;}
+
+
+
+/*代金券*/
+.coupon {
+    position: relative; 
+    height: 96px; margin: 0 .80px; overflow: hidden; color: #ff9402; background: url(../images/coupon.png) 0 0 no-repeat; background-size: auto 100%;
+}
+.coupon::after{
+    content: '';
+    display: block;
+    background-color: #fff;
+    height: 88px;
+    margin: 4px 76px 4px 290px;
+    border-bottom: 1px solid #e5e5e5;
+}
+/*.coupon.past { background-image: url(../images/coupon_no_past.png) 0 0 no-repeat; background-size: 100% 100%; color: #000; }*/
+.coupon.status1 .coupon_right::after {
+    content: '可使用';
+    position: absolute;
+    top: -40px;
+    right: -45px;
+    width: 24px;
+    height: 96px;
+    padding: 18px 60px 0 11.8px;
+    font-size: 20.8px;
+    background: url(../images/coupon_status1.png) 0 0 no-repeat;
+    background-size: auto 100% ;
+}
+.coupon.status3,
+.coupon.status4,
+.coupon.valid0 {
+    /*background-image: url(../image/coupon.png);*/
+    color: #999999;
+}
+.coupon.valid0 .coupon_middle .time .use_type, .coupon.status3 .coupon_middle .time .use_type, .coupon.status4 .coupon_middle .time .use_type { color: #999999; }
+.coupon.status3 .coupon_right::after,
+.coupon.status4 .coupon_right::after,
+.coupon.valid0 .coupon_right::after {
+    content: '不适用';
+    position: absolute;
+    top: -40px;
+    right: -16px;
+    width: 24px;
+    height: 136px;
+    padding: 36px 27px 0 20.8px;
+    font-size: 20.8px;
+    background-image: url(../images/coupon_valid0.png);
+    background-size: 72px 136px;
+    color: #666666;
+}
+.coupon.status3 .coupon_right::after {
+    content: '已使用';
+    position: absolute;
+    top: -40px;
+    right: -45px;
+    width: 24px;
+    height: 96px;
+    padding: 18px 60px 0 11.8px;
+    font-size: 20.8px;
+    background: url(../images/coupon_status3.png) 0 0 no-repeat;
+    background-size: auto 100% ;
+}
+.coupon.status4 .coupon_right::after {
+    content: '已过期';
+    background-image: url(../images/coupon_status4.png);
+}
+.coupon_left { position: absolute; width: 100px; padding-top: 17.6px; }
+.coupon_left .price { float: right; text-align: center; font-size: 35px; color: #999999; font-weight: bold; }
+.coupon_left span { float: right; display: block; font-size: 18px; font-weight: normal; line-height: 64px; text-indent: .80px; margin-right: 12px; }
+.coupon_middle { position:absolute; left: 100px; right: 76px; top: 0; height: 100%; margin: 4px 0; padding: 6px 0 12px 27px; border-left: 1px solid #e9e9e9; overflow: hidden; }
+.coupon_middle .info { font-size: 16px; line-height: 66px; }
+.coupon_middle.xianyong .info { font-size: 16px; margin-top: 8px; line-height:inherit; }
+.coupon_middle .time { overflow: visible; line-height: 20.8px; }
+.coupon_middle .time .use_type { font-size: 16px; color: #ff9c00; line-height: 27.2px;}
+.coupon_middle .time span { color: #999999; font-size: 14px; overflow-y: hidden; }
+.coupon_middle.xianyong .time .use_type { font-size: 14px; margin-top: 3px; line-height:inherit; }
+.coupon_right { position: absolute; top: 40px; right: 20px; width: 32px; line-height: 20.8px; font-size: 16px; color: #ffffff; }
+.coupon.past .price { color: #ff9c00; }
+.coupon.status3 .price,
+.coupon.status4 .price,
+.coupon.valid0 .price {
+    color: #999999;
+}
+.price_length1 .price { font-size: 80px; line-height: 104px; margin-right: 16px; }
+.price_length1 span { line-height: 132px; }
+.price_length2 .price { font-size: 40px; line-height: 53px; }
+.price_length3 .price { font-size: 40px; line-height: 100px; }
+.price_length3 span { line-height: 108px; }
+.usecon10 .info, .usecon11 .info { margin-top: 19.2px; }
+.usecon10 br, .usecon11 br { display: none; }
+.usecon01 .info { margin-top: 12px; line-height: 24px;}
+.usecon01 .time .use_type { font-size: 24px; line-height: 40px; }
+
+/* 过期优惠券 */
+.coupon-footer{ display: none; padding: 24px 0; font-size: 20.8px; color: #999; text-align: center; }
+.coupon-footer a{ margin-left: 28px; color: #ff9c00; text-decoration: underline; }
+.coupon-footer-nodata { position: absolute; left: 0; right: 0; bottom: 16px; }
+
+.textShow { color: #ccc; width: 104px; height: 43.2px; line-height: 43.2px; margin-top: 20px; font-size: 19.2px; padding-left: 32px; display: none; }
+nav .add { margin-top: -12.8px; left: auto; right: 24px; }
+.initiate { border: 1px solid #ff9c00; color: #ff9c00; }
+.initiate_wrap { height: auto; }
+.initiate_wrap .initiate{ height: 62.4px; line-height: 62.4px; }
+
+.index_route a{
+    /*border-bottom: 1px #CCC dashed;*/
+    font-size: 10px;
+    color: #333;
+    float: left;
+    display: inline-block;
+    margin: 0;
+    text-decoration: none;
+}
+
+.side-nav{
+    height: 100%;
+    position: fixed;
+    right: 0;
+    background: #f0f0f0;
+    top: 50px;
+    width: 150px;
+    z-index: 901219;
+}
+.side-nav ul{
+    width: 100%;
+    padding: 0;
+}
+.side-nav ul li{
+    line-height: 42px;
+    list-style: none;
+    border-bottom: 1px solid #CCC;
+    width: 100%;
+    height: 42px;
+    text-align: center;
+}
+.side-nav ul li a{
+    color: #999;
+}
+
+#date-select{
+    -webkit-appearance: none;
+    border: transparent;
+    background: transparent;
+}
+
+.top-fixed{
+    z-index:100;
+    position: fixed;
+    top:0;
+    width:100%;
+    color:#333;
+    font-size: 1.5em;
+    height:50px;
+    background-color: #fff;
+    padding: 0 10px;
+    line-height: 50px;
+    border-bottom: 1px solid #d3d3d3;
+}
+
+.top-fixed a.pull-left{
+    padding: 0 15px;
+    color: #FFF;
+    position: absolute;
+    left: 0px;
+}   
+.top-fixed a.pull-right{
+    padding: 0 15px;
+    color: #FFF;
+    position: absolute;
+    right: 0px;
+}
+/* Default custom select styles */
+div.cs-select {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    text-align: left;
+    background: #fff;
+    z-index: 100;
+    width: 100%;
+    max-width: 500px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+div.cs-select:focus {
+    outline: none; /* For better accessibility add a style for this in your skin */
+}
+
+.cs-select select {
+    display: none;
+}
+
+.cs-select span {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    padding: 1em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Placeholder and selected option */
+.cs-select > span {
+    padding-right: 3em;
+}
+
+.cs-select > span::after,
+.cs-select .cs-selected span::after {
+    speak: none;
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.cs-select > span::after {
+    content: '\25BE';
+    right: 1em;
+}
+
+.cs-select .cs-selected span::after {
+    content: '\2713';
+    margin-left: 1em;
+}
+
+.cs-select.cs-active > span::after {
+    -webkit-transform: translateY(-50%) rotate(180deg);
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* Options */
+.cs-select .cs-options {
+    position: absolute;
+    overflow: hidden;
+    width: 100%;
+    background: #fff;
+    visibility: hidden;
+}
+
+.cs-select.cs-active .cs-options {
+    visibility: visible;
+}
+
+.cs-select ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.cs-select ul span {
+    padding: 1em;
+}
+
+.cs-select ul li.cs-focus span {
+    background-color: #ddd;
+}
+
+/* Optgroup and optgroup label */
+.cs-select li.cs-optgroup ul {
+    padding-left: 1em;
+}
+
+.cs-select li.cs-optgroup > span {
+    cursor: default;
+}
+div.cs-skin-border {
+    background: transparent;
+    font-size: 2em;
+    font-weight: 700;
+    max-width: 600px;
+}
+
+@media screen and (max-width: 30em) {
+    div.cs-skin-border { font-size: 1em; }
+}
+
+.cs-skin-border > span {
+    border: 5px solid #000;
+    border-color: inherit;
+    -webkit-transition: background 0.2s, border-color 0.2s;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.cs-skin-border > span::after,
+.cs-skin-border .cs-selected span::after {
+    font-family: 'icomoon';
+    content: '\e000';
+}
+
+.cs-skin-border ul span::after {
+    content: '';
+    opacity: 0;
+}
+
+.cs-skin-border .cs-selected span::after {
+    content: '\e00e';
+    color: #ddd9c9;
+    font-size: 1.5em;
+    opacity: 1;
+    -webkit-transition: opacity 0.2s;
+    transition: opacity 0.2s;
+}
+
+.cs-skin-border.cs-active > span {
+    background: #fff;
+    border-color: #fff;
+    color: #2980b9;
+}
+
+.cs-skin-border .cs-options {
+    color: #2980b9;
+    font-size: 0.75em;
+    opacity: 0;
+    -webkit-transition: opacity 0.2s, visibility 0s 0.2s;
+    transition: opacity 0.2s, visibility 0s 0.2s;
+}
+
+.cs-skin-border.cs-active .cs-options {
+    opacity: 1;
+    -webkit-transition: opacity 0.2s;
+    transition: opacity 0.2s;
+}
+
+.cs-skin-border ul span {
+    padding: 1em 2em;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.cs-skin-border .cs-options li span:hover,
+.cs-skin-border li.cs-focus span {
+    background: #f5f3ec;
+}
+.container { padding:0;}
+.icon_bus { background: url("../images/icon_bus.png") 0 0 no-repeat;padding: 5px 0 5px 50px;}
+.icon_arrow-left { background: url("../images/arrow-left.png") 0 0 no-repeat;padding: 5px 0 5px 50px;}
+.btn { border:none;}
+.xm { background: url("../images/xm.png") 2% 50% no-repeat;background-size:25px;text-indent:30px;border-bottom:1px solid #d3d3d3;}
+.dh { background: url("../images/dh.png") 2% 50% no-repeat;background-size:25px;text-indent:30px;border-bottom:1px solid #d3d3d3;}
+.id { background: url("../images/id.png") 2% 50% no-repeat;background-size:25px;text-indent:30px;border-bottom:1px solid #d3d3d3;}
+input[type=text]:focus { border-bottom:1px solid #d3d3d3;-webkit-box-shadow:none;}
+.input-group-addon { background:#76d58e;border-color: #76d58e;}
+
+#seat_number_box{
+    width: 100%;
+    height: 100%;
+    background: #FFF;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 901219;
+    display: none;
+    overflow-y: auto;
+}
+#seat_number_list{
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 5%;
+}
+#seat_number_list a{
+    width: 21.2%;
+    margin-right: 3%;
+    padding: 5px 0;
+    margin-bottom: 10px;
+}
+#seat_number_list a.btn-default{
+    border: 1px silver solid;
+}
+#seat_number_list a.selected{
+    border: none;
+}
+#seat_number_list a:nth-child(4n){ 
+    margin-right: 0;
+}
+#seat_number_list a:active, #seat_number_list a:focus{
+    background: inherit;
+}
+#confirmSelectSeat{
+    margin-top: 15px;
+}
+
+.writeoff{
+    width: 100%;
+}
+.writeoff img {
+    width: 60%;
+}
+.writeoff p {
+    margin: 8px 0;
+}

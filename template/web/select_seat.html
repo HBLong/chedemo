@@ -1,0 +1,13 @@
+<div id="seat_number_box">
+    <div id="seat_number_list" class="clearfix">
+        {loop $seatNumberList $seat}
+        <a href="javascript:;" class="seat btn btn-xs {if $seat['occupied'] == 0}btn-default {else} btn-danger{/if} {if $seat['number'] == $seatNumber} btn-success selected{/if}" data-seat="{$seat['number']}" data-occupied="{$seat['occupied']}">
+            <i class="fa fa-check {if $seat['number'] != $seatNumber} hidden{/if}"></i>
+            <span class="{if $seat['number'] == $seatNumber} hidden{/if}">{$seat['number']}</span>
+        </a>
+        {/loop}
+        <button id="confirmSelectSeat" class="btn btn-primary btn-block">确定选择</button>
+        <button id="cancelSelectSeat" class="btn btn-info btn-block">取消选择</button>
+    </div>
+    <p class="text-center text-warning" style="position: absolute; bottom: 15px; width: 100%;">提交订单后如果选中座位已售出，系统将自动分配座位</p>
+</div>

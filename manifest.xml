@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://www.gzliuhe.com" versionCode="0.6">
+	<application setting="true">
+		<name><![CDATA[微车票]]></name>
+		<identifie><![CDATA[fr_cp]]></identifie>
+		<version><![CDATA[1.9]]></version>
+		<type><![CDATA[business]]></type>
+		<ability><![CDATA[微车票]]></ability>
+		<description><![CDATA[车票系统]]></description>
+		<author><![CDATA[随便撸源码论坛]]></author>
+		<url><![CDATA[http://www.suibianlu.com]]></url>
+	</application>
+	<platform>
+		<subscribes>
+			<message type="subscribe" />
+		</subscribes>
+		<handles>
+			<message type="text" />
+			<message type="image" />
+		</handles>
+		<rule embed="false" />
+		<card embed="false" />
+	</platform>
+	<bindings>
+		<menu>
+			<entry title="短信记录管理" do="sms" state="" direct="false" />
+			<entry title="操作日志管理" do="action" state="" direct="false" />
+			<entry title="数据统计" do="stats" state="" direct="false" />
+			<entry title="用户管理" do="user" state="" direct="false" />
+			<entry title="附加项管理" do="addons" state="" direct="false" />
+			<entry title="地区管理" do="area" state="" direct="false" />
+			<entry title="车辆管理" do="vehicle" state="" direct="false" />
+			<entry title="车站管理" do="station" state="" direct="false" />
+			<entry title="班次管理" do="shift" state="" direct="false" />
+			<entry title="线路管理" do="route" state="" direct="false" />
+			<entry title="订票记录" do="order" state="" direct="false" />
+			<entry title="在线售票" do="tickets" state="" direct="false" />
+		</menu>
+		<home>
+			<entry title="订票首页" do="index" state="" direct="false" />
+		</home>
+		<profile>
+			<entry title="我的资料" do="user" state="act=profile" direct="false" />
+			<entry title="我的订单" do="user" state="act=order" direct="false" />
+		</profile>
+	</bindings>
+	<install><![CDATA[CREATE TABLE IF NOT EXISTS `ims_fr_cp_action` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned DEFAULT '0',
+  `uid` int(11) DEFAULT '0',
+  `createtime` int(11) DEFAULT '0',
+  `action_info` text,
+  `ip` varchar(100) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_addons` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned DEFAULT '0',
+  `route_id` int(10) unsigned DEFAULT '0',
+  `title` varchar(200) DEFAULT NULL,
+  `price` float(10,2) DEFAULT NULL,
+  `sort` int(10) unsigned DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_area` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `pid` int(10) unsigned DEFAULT '0',
+  `sort` int(10) unsigned DEFAULT '0',
+  `lv` int(10) unsigned DEFAULT '1',
+  `pinyin` varchar(100) DEFAULT '',
+  `py` varchar(20) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='地区';
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_fee` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned DEFAULT NULL,
+  `type` tinyint(1) unsigned DEFAULT '0' COMMENT '0：退票；1：改签',
+  `time` int(10) unsigned DEFAULT NULL,
+  `fee` float(10,2) DEFAULT '0.00',
+  `fee_type` tinyint(1) unsigned DEFAULT '0' COMMENT '0百分比；1固定金额',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) unsigned DEFAULT '0',
+  `start_station_id` int(11) unsigned DEFAULT '0',
+  `end_station_id` int(11) unsigned DEFAULT '0',
+  `uid` int(11) unsigned DEFAULT '0',
+  `createtime` int(11) unsigned DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned DEFAULT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `template_id` varchar(200) DEFAULT NULL,
+  `sms_content` text,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_notice` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned DEFAULT NULL,
+  `type` tinyint(1) DEFAULT '0' COMMENT '0:微信通知；1：短信通知',
+  `openid` varchar(200) DEFAULT NULL,
+  `mobile` varchar(20) DEFAULT NULL,
+  `msg_id` int(11) DEFAULT NULL,
+  `route_id` int(10) unsigned DEFAULT '0' COMMENT '0：所有路线都通知；其他：指定路线通知',
+  `is_add` tinyint(1) unsigned DEFAULT '0' COMMENT '下单时通知',
+  `is_pay` tinyint(1) unsigned DEFAULT '0' COMMENT '付款是通知',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_order` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT NULL,
+  `shift_id` int(11) DEFAULT NULL,
+  `start_station_id` int(10) unsigned DEFAULT NULL,
+  `end_station_id` int(10) unsigned DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `idcard` varchar(100) DEFAULT NULL,
+  `order_sn` varchar(100) DEFAULT NULL,
+  `is_paid` tinyint(4) DEFAULT '0',
+  `status` tinyint(4) DEFAULT '0',
+  `seat_number` int(10) unsigned DEFAULT NULL,
+  `createtime` int(11) DEFAULT NULL,
+  `price` float(10,2) DEFAULT NULL,
+  `pay_time` int(11) DEFAULT NULL,
+  `number` int(10) unsigned DEFAULT '1' COMMENT '票数量',
+  `voucher_id` int(10) unsigned DEFAULT '0',
+  `isprint` tinyint(1) unsigned DEFAULT '0',
+  `openid` varchar(100) DEFAULT NULL,
+  `addons_id` varchar(200) DEFAULT NULL,
+  `addons` text,
+  `froms` char(20) DEFAULT 'mobile',
+  `check_ticket` tinyint(1) unsigned DEFAULT '0',
+  `check_ticket_time` int(10) unsigned DEFAULT '0',
+  `check_ticket_openid` varchar(100) DEFAULT '',
+  `departure_time` int(10) unsigned DEFAULT '0' COMMENT '发车时间',
+  `before_departure_time` int(10) DEFAULT '0' COMMENT '改签前的发车时间',
+  `remarks` text,
+  `update_time` int(11) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT '0',
+  `is_delete` tinyint(1) DEFAULT '0',
+  `refund_fee` float(10,2) DEFAULT '0.00' COMMENT '退票款项',
+  `change_cost` float(10,2) DEFAULT '0.00' COMMENT '改签费用',
+  `admin_uid` int(10) unsigned DEFAULT '0',
+  `vehicle_id` int(10) unsigned DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='订票记录';
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_route` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `start_station_id` int(10) unsigned DEFAULT NULL,
+  `end_station_id` int(10) unsigned DEFAULT NULL,
+  `recommend` tinyint(1) DEFAULT '0',
+  `insurance` tinyint(1) DEFAULT '0',
+  `person_phone` varchar(100) DEFAULT NULL,
+  `explain` text COMMENT '其它说明',
+  `sms_content` text COMMENT '短信内容',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='路线';
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_seat` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned DEFAULT '0',
+  `order_id` int(10) unsigned DEFAULT '0',
+  `shift_id` int(10) unsigned DEFAULT '0',
+  `seat_number` int(10) unsigned DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_shift` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT '0',
+  `route_id` int(11) DEFAULT '0',
+  `date` date DEFAULT NULL,
+  `time` time DEFAULT '00:00:00',
+  `total_votes` int(11) DEFAULT '0',
+  `surplus_votes` int(11) DEFAULT '0',
+  `ticket_price` float(10,2) DEFAULT NULL,
+  `vehicle_id` int(10) DEFAULT '0',
+  `method` tinyint(1) unsigned DEFAULT '0' COMMENT '购票方式',
+  `enable_vouchers` tinyint(1) unsigned DEFAULT '0' COMMENT '启用代金券',
+  `refund_ticket` tinyint(1) unsigned DEFAULT '0' COMMENT '是否可退票',
+  `sms_content` text COMMENT '短信内容',
+  `status` tinyint(1) unsigned DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='班次';
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_shift_end_station` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) unsigned DEFAULT '0',
+  `end_station_id` int(11) unsigned DEFAULT '0',
+  `shift_id` int(11) unsigned DEFAULT '0',
+  `recommend` tinyint(1) unsigned DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_shift_station` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `shift_id` int(10) unsigned DEFAULT '0',
+  `station_id` int(10) unsigned DEFAULT '0',
+  `departure_time` time DEFAULT '00:00:00',
+  `ticket_price` float(10,2) unsigned DEFAULT '0.00',
+  `recommend` tinyint(1) unsigned DEFAULT '0',
+  `uniacid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='配客表';
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_shift_time` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned DEFAULT NULL,
+  `time` time DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_shift_vehicle` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned DEFAULT NULL,
+  `shift_id` int(10) unsigned DEFAULT '0' COMMENT '班次ID',
+  `vehicle_id` int(10) unsigned DEFAULT '0' COMMENT '车辆ID',
+  `work_date` date DEFAULT '0000-00-00' COMMENT '排班日期',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_sms_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned DEFAULT '0',
+  `mobile` varchar(200) DEFAULT '',
+  `content` text,
+  `createtime` int(11) DEFAULT '0',
+  `status` tinyint(1) DEFAULT '0',
+  `error_msg` varchar(255) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_station` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `sort` int(11) DEFAULT '1',
+  `province_id` int(10) unsigned DEFAULT '0',
+  `city_id` int(10) unsigned DEFAULT '0',
+  `district_id` int(10) unsigned DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='车站';
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT NULL,
+  `openid` varchar(200) DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `sex` tinyint(1) DEFAULT '0',
+  `phone` varchar(20) DEFAULT NULL,
+  `idcard` varchar(100) DEFAULT NULL,
+  `remarks` text,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户资料';
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_vehicle` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT NULL,
+  `license_plate` varchar(255) DEFAULT '',
+  `driver_name` varchar(255) DEFAULT '',
+  `driver_phone` varchar(255) DEFAULT '',
+  `seat_numbers` int(10) unsigned DEFAULT '0',
+  `station_id` int(10) unsigned DEFAULT '0',
+  `vehicle_type` tinyint(1) unsigned DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_voucher` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned DEFAULT NULL,
+  `uid` int(10) unsigned DEFAULT NULL,
+  `title` varchar(200) DEFAULT NULL,
+  `discount` int(10) DEFAULT NULL,
+  `start_station_id` int(10) unsigned DEFAULT NULL,
+  `end_station_id` int(11) DEFAULT NULL,
+  `come_from` tinyint(3) unsigned DEFAULT '0' COMMENT '1:关注送；2：首次购买送；0：其它',
+  `type` tinyint(1) DEFAULT NULL,
+  `end_time` int(11) DEFAULT NULL,
+  `createtime` int(11) DEFAULT NULL,
+  `status` tinyint(1) DEFAULT '0',
+  `order_id` int(11) unsigned DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_fr_cp_writeoff` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned DEFAULT NULL,
+  `route_id` int(10) unsigned DEFAULT NULL,
+  `openid` varchar(100) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+]]></install>
+	<uninstall><![CDATA[DROP TABLE IF EXISTS `ims_fr_cp_action`;
+DROP TABLE IF EXISTS `ims_fr_cp_addons`;
+DROP TABLE IF EXISTS `ims_fr_cp_area`;
+DROP TABLE IF EXISTS `ims_fr_cp_fee`;
+DROP TABLE IF EXISTS `ims_fr_cp_history`;
+DROP TABLE IF EXISTS `ims_fr_cp_message`;
+DROP TABLE IF EXISTS `ims_fr_cp_notice`;
+DROP TABLE IF EXISTS `ims_fr_cp_order`;
+DROP TABLE IF EXISTS `ims_fr_cp_route`;
+DROP TABLE IF EXISTS `ims_fr_cp_seat`;
+DROP TABLE IF EXISTS `ims_fr_cp_shift`;
+DROP TABLE IF EXISTS `ims_fr_cp_shift_end_station`;
+DROP TABLE IF EXISTS `ims_fr_cp_shift_station`;
+DROP TABLE IF EXISTS `ims_fr_cp_shift_time`;
+DROP TABLE IF EXISTS `ims_fr_cp_shift_vehicle`;
+DROP TABLE IF EXISTS `ims_fr_cp_sms_log`;
+DROP TABLE IF EXISTS `ims_fr_cp_station`;
+DROP TABLE IF EXISTS `ims_fr_cp_user`;
+DROP TABLE IF EXISTS `ims_fr_cp_vehicle`;
+DROP TABLE IF EXISTS `ims_fr_cp_voucher`;
+DROP TABLE IF EXISTS `ims_fr_cp_writeoff`;
+]]></uninstall>
+	<upgrade><![CDATA[upgrade.php]]></upgrade>
+</manifest>

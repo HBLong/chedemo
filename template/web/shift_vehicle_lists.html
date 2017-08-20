@@ -1,0 +1,55 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="{php echo __WURL('shift', array('route_id' => $shift_info['route_id']));}">路线列表</a></li>
+        <li class="active"><a href="{php echo __WURL($fr_model, array('shift_id' => $shift_id));}">{$shift_info['route']['name']} {$shift_info['time']} 班次司机列表</a></li>
+        <li><a href="{php echo __WURL($fr_model, array('act' => 'add', 'shift_id' => $shift_id));}">添加 {$shift_info['route']['name']} {$shift_info['time']} 班次司机</a></li>
+    </ul>
+
+    <div style="padding-top:15px;"></div>
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                发车时间列表
+            </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                    <tr>
+                        <th>路线</th>				
+                        <th>排班日期</th>				
+                        <th>发车时间</th>
+                        <th>车牌号</th>
+                        <th>司机</th>
+                        <th>司机电话</th>
+                        <th style="text-align:center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if $result['list']}
+                    {loop $result['list'] $row}
+                        <tr>
+                            <td>{$shift_info['route']['name']}</td>
+                            <td>{$row['work_date']}</td>
+                            <td>{$shift_info['time']}</td>
+                            <td>{$row['vehicle']['license_plate']}</td>
+                            <td>{$row['vehicle']['driver_name']}</td>
+                            <td>{$row['vehicle']['driver_phone']}</td>
+                            <td align="center">
+                                <a href="{php echo __WURL($fr_model, array('act' => 'add', 'id' => $row['id'], 'shift_id' => $shift_id));}" title="编辑" class='btn btn-default btn-sm'><i class="fa fa-edit"></i></a> 
+                                <a href="{php echo __WURL($fr_model, array('act' => 'delete', 'id' => $row['id'], 'shift_id' => $shift_id));}" title="删除" class='btn btn-default btn-sm' onclick="return confirm('确定要删除吗?')"><i class="fa fa-remove"></i></a>
+                            </td>
+                        </tr>
+                    {/loop}
+                    {else}
+                        <tr>
+                            <td colspan="5" align='center'>暂无数据</td>
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
+            {$result['pager']}
+        </div>
+    </div>
+</div>
+{template 'common/footer'}
+{template 'web/tips'}

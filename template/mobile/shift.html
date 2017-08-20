@@ -1,0 +1,90 @@
+{template 'header'}
+<div class="container" style="padding:0;background-color: #f0f0f0;">
+    <style>
+
+    .shift_row{ margin:10px 5px 0 5px;background-color: white;padding:10px 0; }
+    .shift_top{ position: absolute; padding-bottom: 15px; border-bottom: 1px dotted #CCC;background-color: white; height: 50px;width:100%;}
+    .shift_top .btn{ margin-top:-43px; font-size: 14px;padding:14px;}
+    .shift_top h2{ /*position: absolute;*/font-weight: bold; width: 80%; left: 0; text-align: center; top: 0; margin: 0; z-index: -1; font-size: 16px; height: 42px; line-height: 42px;color:#333;}
+    </style>
+    {if !$is_all}
+    <div class="shift_top clearfix">
+        {if $is_zuotian-1}
+        <a href="{php echo __MURL('index');}" class="btn btn-sm btn-default pull-left" style="margin-top:-2px;"><i class="fa fa-angle-double-left"></i> 返回</a>
+        {/if}
+        {if $is_zuotian}
+        <a href="{$zuotian_url}" class="btn btn-sm btn-default pull-left" style="margin-top:-2px;">前一天</a>
+        {/if}
+        <h2>{php echo timeToStr($datetime, 'm月j日');} 周{php echo getChineseWeek($datetime);}</h2>
+        {if $is_mingtian}
+        <a href="{$mingtian_url}" class="btn btn-default btn-sm pull-right">后一天</a>
+        {/if}
+    </div>
+    {else}
+    <div class="top-fixed">
+        <span class="pull-left"><a href="javascript:history.go(-1)" style="color:#333;"><i class="fa fa-chevron-left" style="margin-right:15px;"></i> 发车详情</a> </span>
+        <span class="pull-right"><a href="{php echo __MURL('user');}"><img src="/addons/fr_cp/resource/images/header.png" style="width:75%;" /></a></span>
+    </div>
+    {/if}
+    {if $result}
+
+    <?php
+    $arr = array();
+    foreach($result as $v){
+      $arr = $v;
+    }
+    ?>
+    <div style="margin:60px 5px 10px;background-color: #fff;padding:20px 5px;">
+        <span class="icon_bus"></span> {$arr['start_station']['name']}
+        <span class="icon_arrow-left"></span>
+        <span class="icon_bus"></span> {$arr['end_station']['name']}
+    </div>
+    <label style="padding-left:10px;">发车时间：</label>
+    {loop $result $shift}
+        <div class="row shift_row clearfix">
+                <div class="col-xs-7 shift_time">
+
+                    <p>
+                        <i class="fa fa-bus" style="color: #FF5722;font-size: 1.3em;margin-right:5px;"></i><span>{if $is_all}{$shift['date']} {/if}{php echo timeToStr($shift['time'], 'H:i')} 周{php echo getChineseWeek($shift['time']);}</span>
+                    </p>
+                </div>
+
+                <div class="col-xs-2" style="padding:0;">
+                    <p class="text-right text-red">￥{$shift['ticket_price']}</p><!--
+                    <p class="text-right text-666" style="font-size:.7em;">余票{$shift['surplus_votes']}张</p>-->
+                </div>
+                <div class="col-xs-3 text-center">
+                    {if $shift['surplus_votes'] > 0 && $shift['time'] > TIMESTAMP}
+                    <a class="btn btn-info btn-sm btn-dp dp-link" data-shift="{$shift['shift_id']}" href="{php echo __MURL('order', array('act' => 'checkout', 'date' => $date, 'shift_id' => $shift['shift_id'], 'start_station_id' => $shift['start_station_id'], 'end_station_id' => $shift['end_station_id']))}">
+                        {if $shift['method'] == 1}
+                        订票
+                        {else}
+                        购票
+                        {/if}
+                    </a>
+                    {else}
+                        {if $shift['time'] < TIMESTAMP}
+                        <a href="javascript:;" class="btn btn-default btn-sm disabled">
+                            已发班
+                        </a>
+                        {elseif $shift['surplus_votes'] <= 0}
+                        <a href="javascript:;" class="btn btn-default btn-sm disabled">
+                            已售罄
+                        </a>
+                        {/if}
+                    {/if}
+                </div>
+        </div>
+        {/loop}
+    {else}
+    <h2 class="text-center" style="font-size: 14px; margin-top: 70px;">没有找到您要的班次，您可以更换时间试一试</h2>
+    {/if}
+</div>
+<script>
+    $(".dp-link").on("click", function() {
+        var shift_id = Number($(this).data('shift'));
+        return true;        
+    });
+</script>
+
+{template 'footer'}

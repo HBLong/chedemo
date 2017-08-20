@@ -1,0 +1,104 @@
+{template 'common/header'}
+<div class="main">
+	<ul class="nav nav-tabs">
+            <li><a href="{php echo __WURL($fr_model);}">路线附加项列表</a></li>
+            <li class="active"><a href="{php echo __WURL($fr_model, array('act' => 'add', 'area_id' => $area_id));}">添加路线附加项</a></li>
+	</ul>
+    
+    <div class="">
+	<form action="" class="form-horizontal form" method="post">
+		<input type="hidden" name="id" value="{$item['id']}">
+		<input type="hidden" name="token" value="{$_W['token']}" />
+		<input type="hidden" name="act" value="update" />
+		<div class="panel panel-default">
+                        <div class="panel-heading" id="paoject_info">
+                            {if !empty($id)}修改{else}添加{/if}路线附加项信息
+			</div>
+			<div class="panel-body">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">所属路线</label>
+                                    <div class="col-sm-8">
+                                        <select name="postdata[route_id]" class="form-control">
+                                            <option value="0">选择路线</option>
+                                            {loop $route_all $route}
+                                            <option value="{$route['id']}" {if $route['id'] == $item['route_id']} selected="selected"{/if}>{$route['name']}</option>
+                                            {/loop}
+                                        </select>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">标题</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="postdata[title]" value="{$item['title']}" />
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">价钱</label>
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="postdata[price]" value="{$item['price']}" />
+                                            <span class="input-group-addon">元</span>
+                                        </div>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
+                                    <div class="col-sm-4">
+                                        <input type="number" class="form-control" name="postdata[sort]" value="{$item['sort']}" />
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">&nbsp;</label>
+                                    <div class="col-sm-9">
+                                        <button type="submit" class="btn btn-primary col-lg-1" name="submit" value="提交">提交</button>
+                                    </div>
+				</div>
+			</div>
+		</div>
+	</form>
+    </div>
+</div>
+<script type="text/javascript">
+$(".fr_area").on("change", function() {
+    var _this = $(this), id = _this.data('id');
+    if (!id) {
+        getStation(_this);
+        return ;
+    }
+    _this.parents(".selectList").find(".fr_district").html('<option value="0">'+ _this.parents(".selectList").find(".fr_district").children('option').eq(0).html()+'</option>');
+    var val = _this.val();
+    if (val == 0) {
+        _this.parents(".selectList").find("."+id).html('<option value="0">'+_this.parents(".selectList").find("."+id).children('option').eq(0).html()+'</option>');
+        getStation(_this);
+        return false;
+    }
+    $.post('{php echo __WURL("station", array("act" => "getarea"));}', {pid:val, act:'getarea'}, function (res){
+        if (res) {
+            var html = '<option value="0">'+_this.parents(".selectList").find("."+id).children('option').eq(0).html()+'</option>';
+            $.each(res, function(i, _item) {
+                html += '<option value="'+_item.id+'">'+_item.name+'</option>';
+            });
+            _this.parents(".selectList").find("."+id).html(html);
+            getStation(_this);
+        }
+    }, 'JSON');
+});
+function getStation(obj) {
+    var province_id = obj.parents(".selectList").find(".fr_province").val();
+    var city_id = obj.parents(".selectList").find(".fr_city").val();
+    var district_id = obj.parents(".selectList").find(".fr_district").val();
+    var data = {province_id:province_id, city_id:city_id, district_id:district_id};
+    $.post('{php echo __WURL("station", array("act" => "getstation"));}', data, function (res){
+        var station = obj.parents(".selectList").find(".station");
+        var html = '<option value="0">'+station.children('option').eq(0).html()+'</option>';
+        if (res) {
+            $.each(res, function(i, _item) {
+                html += '<option value="'+_item.id+'">'+_item.name+'</option>';
+            });
+        }
+        station.html(html);
+    }, 'JSON');
+}
+</script>
+{template 'common/footer'}
+{template 'web/tips'}

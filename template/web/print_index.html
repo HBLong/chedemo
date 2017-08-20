@@ -1,0 +1,248 @@
+{template 'common/header'}
+<style>
+    .div_play_aray {
+        border:#77776F 1px solid;
+        margin:0;
+    }    
+</style>
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{php echo __WURL('print');}">车票打印设置</a></li>
+        <li><a href="{url 'profile/module/setting' array('m' => 'fr_cp')}">系统设置</a></li>
+    </ul>
+
+    <form action="" class="form-horizontal form" method="post" name="theForm" autocomplete="off" onsubmit="return validate();">
+        <input type="hidden" name="config_lable" value="">
+        <input type="hidden" name="act" value="">
+        <div class="panel panel-default">
+            <div class="panel-heading" id="paoject_info">
+                车票模板设置
+            </div>
+            <div class="panel-body">
+                <table class="table_box table table-bordered">
+                    <!--菜单栏 start-->
+                    <tr>
+                        <td style="overflow:hidden; background-color:#EFEFDE; padding-left:8px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" height="50">
+                                <tr>
+                                    <td align="left">
+                                        <div class="clearfix input-group">
+                                            <select name="lable" id="lable" class="form-control col-lg-6" style=" float: none;" onchange="javascript:call_flash('lable_add', this);">
+                                            <option value="" selected="selected">--选择插入标签--</option>
+                                            {loop $lables $val $text}
+                                            <option value="{$val}">{$text}</option>
+                                            {/loop}
+                                        </select>
+                                        <input type="button" name="del" style=" float: none; margin-left: 15px;" class="btn btn-danger col-lg-5" id="del" value="删除标签" onclick="javascript:call_flash('lable_del', this);">
+                                        </div>
+                                    </td>
+                                    <td id="pic_control_upload" {if $print_bg != ''} class="hidden" {/if}>
+                                        <div class="input-group">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-success" type="button" onclick="showImageDialog(this);">上传车票图片</button>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td id="pic_control_del" {if $print_bg == ''} class="hidden" {/if}>
+                                        <input type="button" name="upload_del" id="upload_del" class="btn btn-danger" onclick="javascript:bg_del();" value="删除车票图片" {if $print_bg == ''} disabled="disabled" {/if}>
+                                    </td>
+                                    <td align="right">
+                                        <button type="button" class="btn btn-primary" name="button" value="提交" onclick="javascript:save();">提交</button>
+                                        <button type="button" class="btn btn-primary" name="button" value="恢复默认" onclick="javascript:recovery_default();">恢复默认</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">&nbsp;</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <!--菜单栏 end-->
+
+                    <!--编辑区 start-->
+                    <tr>
+                        <td id="xEditingArea" valign="top" height="400" width="100%">
+                            <div class="div_play_aray">
+                                <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" width="800" height="400" id="test">
+                                    <param name="movie" value="{__JS__}/print/pint.swf">
+                                    <param name="quality" value="high">
+                                    <param name="menu" value="false">
+                                    <param name="wmode" value="transparent">
+                                    <param name="FlashVars" value="bcastr_config_bg={$print_bg}&swf_config_lable={$config_lable}">
+                                    <param name="allowScriptAccess" value="sameDomain"/>
+                                    <embed src="{__JS__}/pint.swf" wmode="transparent" FlashVars="bcastr_config_bg={$print_bg}&swf_config_lable={$config_lable}" menu="false" quality="high" width="800" height="400" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" allowScriptAccess="sameDomain" name="test" swLiveConnect="true"/>
+                                </object>
+                            </div>
+                        </td>
+                    </tr>
+                    <!--编辑区 end-->
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    var Browser = new Object();
+    Browser.isMozilla = (typeof document.implementation != 'undefined') && (typeof document.implementation.createDocument != 'undefined') && (typeof HTMLDocument != 'undefined');
+    Browser.isIE = window.ActiveXObject ? true : false;
+    Browser.isFirefox = (navigator.userAgent.toLowerCase().indexOf("firefox") != -1);
+    Browser.isSafari = (navigator.userAgent.toLowerCase().indexOf("safari") != -1);
+    Browser.isOpera = (navigator.userAgent.toLowerCase().indexOf("opera") != -1);
+
+    var display_yes = Browser.isIE ? "block" : "table-row-group";
+    function showImageDialog(elm, opts) {
+        require(["util"], function(util){
+            util.image('', function(url){
+                $.post("{php echo __WURL('print', array('act'=>'print_upload'))}", {print_bg : url.url}, function(res){
+                    if (res.type != 'success') {
+                        util.message(res.message, '', 'error');
+                    }else{
+                        window.location.reload();
+                    }
+                }, "JSON");
+                //url.url
+            }, null, {});
+        });
+    }
+    /**
+     * 恢复默认
+     */
+    function recovery_default() {
+        //获取表单对象
+        var the_form = this_obj("theForm");
+        if (typeof the_form == "undefined") {
+            return false;
+        }
+        if (!confirm("您确认恢复默认吗？恢复默认后将显示安装时的内容。")) {
+            return false;
+        }
+        the_form.act.value = "recovery_default_template";
+        the_form.submit();
+        return true;
+    }
+
+    /**
+     * 保存
+     */
+    function save() {
+        //获取表单对象
+        var the_form = this_obj("theForm");
+        if (typeof the_form == "undefined") {
+            return false;
+        }
+        the_form.config_lable.value = call_flash("lable_Location_info", "");
+        the_form.act.value = "do_edit_print_template";
+        the_form.submit();
+        return true;
+    }
+
+    /**
+     * 打印单背景图片删除
+     */
+    function bg_del() {
+        //获取表单对象
+        var the_form = this_obj("theForm");
+        if (typeof the_form == "undefined") {
+            return false;
+        }
+        if (!confirm("提示：您确认删除打印单图片吗？")) {
+            return false;
+        }
+        $.get("{php echo __WURL('print', array('act' => 'print_del'))}", {}, function(res) {
+            if (res.type == 'success') {
+                call_flash("bg_delete", "");
+            }
+        }, "JSON");
+    }
+
+    var lable_index = new Array();
+    {if $lable_index}
+    {loop $lable_index $key $index}
+    lable_index["{$key}"] = {$index};
+    {/loop}
+    {/if}
+    /**
+     * 与模板Flash编辑器通信
+     */
+    function call_flash(type, currt_obj) {
+        //获取flash对象
+        var obj = this_obj("test");
+        //执行操作
+        switch (type) {
+            case "bg_delete":
+                //删除打印单背景图片
+                var result_del = obj.bg_delete();
+                //执行成功 修改页面上传窗口为显示 生效
+                if (result_del) {
+                    $("#pic_control_upload").removeClass("hidden");
+                    $("#pic_control_del").addClass("hidden");
+                }
+                break;
+
+            case "bg_add":
+                //添加打印单背景图片
+                var result_add = obj.bg_add(currt_obj);
+                //执行成功 修改页面上传窗口为隐藏 失效
+                if (result_add) {
+                    $("#pic_control_upload").addClass("hidden");
+                    $("#pic_control_del").removeClass("hidden");
+                }
+                break;
+
+            case "lable_add":
+                //插入标签
+                if (typeof currt_obj != "object") {
+                    return false;
+                }
+                if (currt_obj.value == "") {
+                    return false;
+                }
+                var result = obj.lable_add("t_" + currt_obj.value, currt_obj.options[currt_obj.selectedIndex].text, 100, 25, 20, 100, "b_" + currt_obj.value);
+                if (!result) {
+                    lable_index["t_" + currt_obj.value] = lable_index["t_" + currt_obj.value] ? parseInt(lable_index["t_" + currt_obj.value]) + 1 : 1;
+                    var index = lable_index["t_" + currt_obj.value];
+                    result = obj.lable_add("t_" + currt_obj.value + index, currt_obj.options[currt_obj.selectedIndex].text + index, 100, 25, 20, 100, "b_" + currt_obj.value + index);
+                   
+                }
+                if (!result) { 
+                    alert("操作失败！不允许添加重复标签。");
+                    return false;
+                }
+                break;
+
+            case "lable_del":
+                //删除标签
+                var result_del = obj.lable_del();
+                if (result_del) {
+                } else {
+                    alert("删除失败！您没有选中任何标签。");
+                }
+                break;
+
+            case "lable_Location_info":
+                //获取标签位置信息
+                var result_info = obj.lable_Location_info();
+                return result_info;
+                break;
+        }
+        return true;
+    }
+
+    /**
+     * 获取页面Flash编辑器对象
+     */
+    function this_obj(flash_name) {
+        var _obj;
+        if (Browser.isIE) {
+            _obj = window[flash_name];
+        } else {
+            _obj = document[flash_name];
+        }
+        if (typeof _obj == "undefined") {
+            _obj = document[flash_name];
+        }
+        return _obj;
+    }
+</script>
+{template 'common/footer'}
+{template 'web/tips'}

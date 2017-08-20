@@ -1,0 +1,194 @@
+{template 'header'}
+<style>
+    .btn { border-radius: 0;}
+</style>
+<div class="top-fixed">
+    <span class="pull-left">车票查询</span>
+    <span class="pull-right"><a href="{php echo __MURL('user');}"><img src="/addons/fr_cp/resource/images/header.png" style="width:75%;" /></a></span>
+</div>
+<h4 style="color: #333;background-color: #f0f0f0;padding: 15px 10px;margin-top: 50px;">
+    常用、热门线路查询
+    <span>
+        <a id="clearHistory" class="btn btn-sm btn-default" style="margin-left: 15px;border: 1px solid #ff8a66;border-radius: 5px;">清除浏览记录</a>
+    </span>
+</h4>
+<div class="container">
+
+
+
+
+<!--    <style>
+        .bando a:nth-child(odd) { background-color:#00bed8;border-color:#00bed8; }
+        .bando a:nth-child(even) { background-color:#fe9903;border-color:#fe9903;}
+        #title { margin-top:-15px;font-weight:bold;color: white;}
+    </style>-->
+
+<div class="container clearfix index_route bando" style=";margin:0;">
+    {loop $index_route $row}
+    <a class="btn btn-default btn-block" style="font-size: 14px;border-bottom: 1px solid #d3d3d3;margin:5px 0;" href="{php echo __MURL('shift', array('date'=>'all', 'start_station_id' => $row['start_station']['id'], 'end_station_id' => $row['end_station']['id']));}">
+        <span class="icon_bus"></span>{$row['start_station']['name']}
+        <span class="icon_arrow-left"></span>
+        <span class="icon_bus"></span>{$row['end_station']['name']}
+    </a>
+    {/loop}
+</div>
+
+
+    <form action='{php echo __MURL("shift");}' method="post" autocomplete="off" >
+        <div class="dp-index-form">
+            <a class="clearfix" href="javascript:;" id="start_station_btn">
+                <div class="dp-form-item pull-left">
+                    <input type="hidden" name="start_station_id" id="start_station_id" value=""/>
+                    <i class="fa fa-bus" style="color: #428bca;font-size: 1.3em;"></i>
+                    <span class="title">始发站</span>
+                </div>
+                <span class="pull-right"><i class="fa fa-angle-down"></i></span>
+            </a>
+        </div>
+        <div class="dp-index-form">
+            <a class="clearfix" href="javascript:;" id="end_station_btn">
+                <div class="dp-form-item pull-left">
+                    <input type="hidden" name="end_station_id" id="end_station_id" value=""/>
+                    <i class="fa fa-bus" style="color: #FF5722;font-size: 1.3em;"></i>
+                    <span class="title">终点站</span>
+                </div>
+                <span class="pull-right"><i class="fa fa-angle-down"></i></span>
+            </a>
+        </div>
+        <div class="dp-index-form" style="clear: both;">
+            <a class="clearfix" href="javascript:;">
+                <div class="dp-form-item pull-left">
+                    <i class="fa fa-clock-o" style="color: #8BC34A;font-size: 1.3em;"></i>
+                    <select name="date" id="date-select" style="width:270px;" class="title">
+                        {loop $days $key $day}
+                            <option value="{$key}" data-title="{$day}">{$day}</option>
+                        {/loop}
+                    </select>
+                    <!--<label for="date-select"  style=" font-weight: normal;">选择日期</label>-->
+                </div>
+                <span class="pull-right" style="z-index: -1000;"><i class="fa fa-angle-down"></i></span>
+            </a>
+        </div>
+        <p class="text-center bg-warning hide" style="padding:10px;width:100%;margin:20px 0;">现在可预定 <span class='text-danger'>{$start_end_date}</span> 的车票</p>
+        <p style="margin-top:10px;">
+            <button type="submit" class="btn btn-warning btn-block" id="checkShift" style="background-color: #ff8a66;border-color:#ff8a66;font-size:1.3em;padding:15px 0;margin:0 10px;width:95%;">查询</button>
+         </p>
+    </form>
+    <br>
+
+    
+</div>
+
+
+<div class="area_station_box">
+    <div class="area_station_box_head">
+        <a href="javascript:;" class="area_station_box_close"><i class="fa fa-arrow-left"></i></a>
+        <h2 id="title"></h2>
+    </div>
+    <div class="area_station_box_content">
+        <dl>
+        {loop $area_all $area}
+            <dt><span>{$area['name']}</span></dt>
+            {loop $area['station'] $station}
+            <dd data-id="{$station['id']}" data-title="{$station['name']}" class="select-station"><a href="javascript:;">{$station['name']}</a></dd>
+            {/loop}
+        {/loop}
+        </dl>
+    </div>
+</div>
+<div class="dp_date_box">
+    <div class="dp_date_box_head">
+        <a href="javascript:;" class="dp_date_box_close"><i class="fa fa-angle-double-left"></i> 返回</a>
+        <h2>选择日期</h2>
+    </div>
+    <div class="dp_date_box_content">
+        <dl>
+            <dd data-date="all" data-title="全部日期" class="select-date">全部日期</dd>
+            {loop $days $key $day}
+            <dd data-date="{$key}" data-title="{$day}" class="select-date">{$day}</dd>
+            {/loop}
+        </dl>
+    </div>
+</div>
+<script type="text/javascript">
+var station = 1;
+require(['jquery', 'util'],function($, util){
+    $("#checkShift").on('click', function() {
+        if ($("#start_station_id").val() == '') {
+            dialog.alert('请选择乘车始发站');
+            return false;
+        }
+        if ($("#end_station_id").val() == '') {
+            dialog.alert('请选择乘车目的站', '', 'error');
+            return false;
+        }
+    });
+    
+    //选择车站
+    $("#start_station_btn").on("click", function() {
+        station = 1;
+        $("#title").text("始发站选择");
+        chanagetitle("{$_W['account']['name']}");
+        $(".area_station_box").show();
+    });
+    $("#end_station_btn").on("click", function() {
+        station = 2;
+        $("#title").text('终点站选择');
+        chanagetitle("{$_W['account']['name']}");
+        $(".area_station_box").show();
+    });
+    $(".select-station").on('click', function() {
+        var id = $(this).data('id'), title = $(this).data('title');
+        if (station == 1) {
+            $("#start_station_id").val(id);
+            $("#start_station_id").siblings(".title").removeClass('hide').text(title);
+        }else{
+            $("#end_station_id").val(id);
+            $("#end_station_id").siblings(".title").removeClass('hide').text(title);
+        }
+        $(".area_station_box").hide();
+        chanagetitle("{$_W['account']['name']}");
+    });
+    $(".area_station_box_close").on('click', function() {
+        $(".area_station_box").hide();
+        chanagetitle("{$_W['account']['name']}");
+    });
+    
+    
+    
+    //选择日期
+    $("#date_btn").on("click", function() {
+        $(".dp_date_box").show();
+    });
+    $(".select-date").on('click', function() {
+        var date = $(this).data('date'), title = $(this).data('title');
+        $("#dp-select-date").val(date);
+        $("#dp-select-date").siblings(".title").removeClass('hide').text(title);
+        $(".dp_date_box").hide();
+    });
+    $(".dp_date_box_close").on('click', function() {
+        $(".dp_date_box").hide();
+    });
+    
+});
+function chanagetitle(title) {
+    var $body = $('body');
+    document.title = title;
+    // hack在微信等webview中无法修改document.title的情况
+    var $iframe = $('<iframe src="/favicon.ico"></iframe>');
+    $iframe.on('load',function() {
+        setTimeout(function() {
+            $iframe.off('load').remove();
+        }, 0);
+    }).appendTo($body);
+}
+
+$("#clearHistory").on('click', function() {
+    if(window.confirm("确定清除?")){
+        $.post("{php echo __MURL('index', array('act' => 'clear'))}", {}, function(json){
+                window.location.href = "{php echo __MURL('index')}";
+        });
+    }
+});
+</script>
+{template 'footer'}

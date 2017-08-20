@@ -1,0 +1,87 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="{url 'profile/module/setting' array('m' => 'fr_cp')}">系统设置</a></li>
+        <li class="active"><a href="{php echo __WURL('notice');}">管理员通知设置</a></li>
+        <li><a href="{php echo __WURL('notice', array('act' => 'add'));}">添加通知</a></li>
+        <li><a href="{php echo __WURL('message');}">通知内容列表</a></li>
+    </ul>
+
+    <div style="padding-top:15px;"></div>
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                {php echo $fr_web_page_title[$fr_model]}列表
+            </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                    <tr>
+                        <th style="width:60px;">ID</th>						
+                        <th>通知类型</th>
+                        <th style="width:260px;">接收通知<br>手机号码/openid</th>
+                        <th>通知内容ID</th>
+                        <th>通知路线</th>
+                        <th>下单时通知</th>
+                        <th>付款时通知</th>
+                        <th style="text-align:center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if $result['list']}
+                    {loop $result['list'] $row}
+                        <tr>			
+                            <td class="row-first">{$row['id']}</td>
+                            <td>{if $row['type'] == 1}短信{else}微信{/if}</td>
+                            <td>{$row['mobile']}{$row['openid']}</td>
+                            <td>{$row['msg_id']}</td>
+                            <td>{if $row['route_id'] == 0}所有路线{else}{php echo getDataById('route', $row['route_id'], 'name', '-')}{/if}</td>
+                            <td>
+                                {if $row['is_add'] == 1}
+                                <a class="setStatus" data-id="{$row['id']}" href="{php echo __WURL($fr_model, array('act' => 'setIsAdd', 'id' => $row['id']));}"><i class="fa fa-check text-success"></i></a>
+                                {else}
+                                <a class="setStatus" data-id="{$row['id']}" href="{php echo __WURL($fr_model, array('act' => 'setIsAdd', 'id' => $row['id']));}"><i class="fa fa-close text-danger"></i></a>
+                                {/if}
+                            </td>
+                            <td>
+                                {if $row['is_pay'] == 1}
+                                <a class="setStatus" data-id="{$row['id']}" href="{php echo __WURL($fr_model, array('act' => 'setIsPay', 'id' => $row['id']));}"><i class="fa fa-check text-success"></i></a>
+                                {else}
+                                <a class="setStatus" data-id="{$row['id']}" href="{php echo __WURL($fr_model, array('act' => 'setIsPay', 'id' => $row['id']));}"><i class="fa fa-close text-danger"></i></a>
+                                {/if}
+                            </td>
+                            <td align="center">
+                                <a href="{php echo __WURL($fr_model, array('act' => 'add', 'id' => $row['id']));}" title="编辑" class='btn btn-default btn-sm'><i class="fa fa-edit"></i></a> 
+                                <a href="{php echo __WURL($fr_model, array('act' => 'delete', 'id' => $row['id']));}" title="删除" class='btn btn-default btn-sm' onclick="return confirm('确定要删除吗?')"><i class="fa fa-remove"></i></a>
+                            </td>
+                        </tr>
+                    {/loop}
+                    {else}
+                        <tr>
+                            <td colspan="8" align='center'>暂无数据</td>
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
+            {$result['pager']}
+        </div>
+    </div>
+</div>
+<script>
+    $(".setStatus").on('click', function() {
+        var _this = $(this), url = _this.attr('href');
+        $.post(url, {id : _this.data('id')}, function(res) {
+            if (res.type == 'success') {
+                if (res.message == 1) {
+                    _this.find("i").addClass('fa-check text-success').removeClass('fa-close text-danger');
+                }else{
+                    _this.find("i").removeClass('fa-check text-success').addClass('fa-close text-danger');
+                }
+            }else{
+                alert(res.message);
+            }
+        }, "JSON");
+        return false;
+    });
+</script>
+{template 'common/footer'}
+{template 'web/tips'}

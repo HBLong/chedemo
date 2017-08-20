@@ -1,0 +1,62 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="{url 'profile/module/setting' array('m' => 'fr_cp')}">系统设置</a></li>
+        <li><a href="{php echo __WURL('notice');}">管理员通知设置</a></li>
+        <li class="active"><a href="{php echo __WURL('message');}">通知内容列表</a></li>
+        <li><a href="{php echo __WURL('message', array('act' => 'add'));}">添加通知内容</a></li>
+    </ul>
+
+    <div style="padding-top:15px;"></div>
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                {php echo $fr_web_page_title[$fr_model]}列表
+            </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                    <tr>
+                        <th style="width:60px;">ID</th>						
+                        <th>标题</th>
+                        <th>模板ID</th>
+                        <th>通知内容</th>
+                        <th style="text-align:center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if $result['list']}
+                    {loop $result['list'] $row}
+                        <tr>			
+                            <td class="row-first">{$row['id']}</td>
+                            <td>{$row['title']}</td>
+                            <td>
+                                {if $row['template_id']}
+                                <pre>{$row['template_id']}</pre>
+                                {else}
+                                --
+                                {/if}
+                            </td>
+                            <td>
+                                {if $row['sms_content']}
+                                <pre>{$row['sms_content']}</pre>
+                                {/if}
+                            </td>
+                            <td align="center">
+                                <a href="{php echo __WURL($fr_model, array('act' => 'add', 'id' => $row['id']));}" title="编辑" class='btn btn-default btn-sm'><i class="fa fa-edit"></i></a> 
+                                <a href="{php echo __WURL($fr_model, array('act' => 'delete', 'id' => $row['id']));}" title="删除" class='btn btn-default btn-sm' onclick="return confirm('确定要删除吗?')"><i class="fa fa-remove"></i></a>
+                            </td>
+                        </tr>
+                    {/loop}
+                    {else}
+                        <tr>
+                            <td colspan="5" align='center'>暂无数据</td>
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
+            {$result['pager']}
+        </div>
+    </div>
+</div>
+{template 'common/footer'}
+{template 'web/tips'}

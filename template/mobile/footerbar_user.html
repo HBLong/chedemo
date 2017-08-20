@@ -1,0 +1,22 @@
+<style>
+    body{ padding-bottom:63px;}
+    .nav-bardown {
+        border-top: none;
+        height:3em;
+        line-height: 3em;
+    }
+
+    .nav-bardown i {display: inline-block;
+        font-size: 1em;
+        color: #a2a6a9;}
+    .fr-dp-nav li a:hover {
+        background-color: #ff8a66;
+    }
+    .fr-dp-nav .active{ background: #ff8a66;}
+    .fr-dp-nav li a:hover i, .fr-dp-nav li a:hover span, .fr-dp-nav .active i, .fr-dp-nav .active span{ color: #FFF;}
+   
+</style>
+<ul class="nav nav-bardown nav-justified fr-dp-nav" style="z-index:10;">
+	<li><a href="{php echo __MURL('index');}"><i class="fa fa-search"></i> <span>查询与购票</span></a></li>
+	<li><a href="{php echo __MURL('user');}" class="active"><i class="fa fa-user"></i> <span>我的帐号</span></a></li>
+</ul>

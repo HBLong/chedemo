@@ -1,0 +1,61 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{php echo __WURL($fr_model);}">{php echo $fr_web_page_title[$fr_model]}列表</a></li>
+    </ul>
+
+    <div style="padding-top:15px;"></div>
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                优惠券列表
+            </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                    <tr>					
+                        <th>名称</th>
+                        <th>类别</th>
+                        <th>金额</th>
+                        <th>限定路线</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if $result['list']}
+                    {loop $result['list'] $row}
+                        <tr>			
+                            <td class="row-first">{$row['title']}</td>
+                            <td>
+                            {if $row['discount'] > 0} 代金券 {else} 免费券 {/if}
+                            </td>
+                            <td>{if $row['discount'] > 0} {$row['discount']} {else} -- {/if}</td>
+                            <td>
+                                {if $row['start_station_id'] == 0 || $row['end_station_id'] == 0}
+                                通用 
+                                {else}
+                                    {php echo getDataById('station', $row['start_station_id'], 'name');} -> 
+                                    {php echo getDataById('station', $row['end_station_id'], 'name');}
+                                {/if}
+                            </td>
+                            <td>
+                                {if $row['status'] == 0}
+                                    <span class="label label-success">未使用</span>
+                                {else}
+                                    <span class="label label-default">已使用</span>
+                                {/if}
+                            </td>
+                        </tr>
+                    {/loop}
+                    {else}
+                        <tr>
+                            <td colspan="5" align='center'>暂无数据</td>
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
+            {$result['pager']}
+        </div>
+    </div>
+</div>
+{template 'common/footer'}
+{template 'web/tips'}

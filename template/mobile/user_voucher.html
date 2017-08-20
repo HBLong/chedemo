@@ -1,0 +1,44 @@
+{template 'header'}
+<style>
+    body{ background: #eee;}
+</style>
+
+<div class="top-fixed">
+    <span class="pull-left"><a href="javascript:history.go(-1)" style="color:#333;"><i class="fa fa-chevron-left" style="margin-right:15px;"></i>我的券</a></span>
+</div>
+<div class="container" style="margin-top:50px;">
+    {if $voucher_list}
+        <p class="text-center text-666">此券为商业折扣券，一经使用，不找零退换</p>
+        {loop $voucher_list $key $voucher}
+        <div class="coupon {if $voucher['status'] != 0} status3{else} status1{/if} past">
+            <div class="coupon_left price_length2">
+                {if $voucher['discount'] > 0}
+                    <span>元</span>
+                    <div class="price">{php echo intval($voucher['discount']);}</div>
+                {else}
+                    <span>免费券</span>
+                {/if}
+              <div class="textShow">1</div>
+            </div>
+            <div class="coupon_middle usecon00 {if $voucher['start_station_id'] > 0 && $voucher['end_station_id'] > 0} xianyong {/if}">
+              <div class="info">{$voucher['title']}</div>
+              <div class="time">
+                <span class="use_type">
+                {if $voucher['start_station_id'] == 0 || $voucher['end_station_id'] == 0}
+                
+                {else}
+                适用 {php echo getDataById('station', $voucher['start_station_id'], 'name');} 至 {php echo getDataById('station', $voucher['end_station_id'], 'name');} 线路
+                {/if}
+                </span><br>
+                <!--<span class="">无时间限制</span>-->
+              </div>
+            </div>
+            <div class="coupon_right"></div>
+        </div>
+        {/loop}
+    {else}
+    <h2 class="text-center" style="font-size: 14px;">您还没有领取任何代金券</h2>
+    {/if}
+</div>
+{template 'footerbar_user'}
+{template 'footer'}

@@ -1,0 +1,266 @@
+{template 'header'}
+<style>
+    body { background-color: #f0f0f0;}
+</style>
+<div class="top-fixed">
+    <a href="javascript:;" class="pull-right" id="side-nav"><img src="/addons/fr_cp/resource/images/header.png" style="width:75%;" /></a></a>
+    <span class="pull-left"><a href="javascript:history.go(-1)" style="color:#333;"><i class="fa fa-chevron-left" style="margin-right:15px;"></i>购票</a></span>
+</div>
+<div class="side-nav animated slideInRight hide">
+    <ul>
+        <li>
+            <a class="mnav-box-list" href="{php echo __MURL('user');}">
+                <span>个人中心</span>
+            </a>
+        </li>
+        <li>
+            <a class="mnav-box-list" href="{php echo __MURL('user', array('act' => 'order'));}">
+                <span>我的订单</span>
+            </a>
+        </li>
+        <li>
+            <a class="mnav-box-list" href="{php echo __MURL('user', array('act' => 'profile'));}">
+                <span>我的资料</span>
+            </a>
+        </li>
+        <li>
+            <a class="mnav-box-list" href="{php echo __MURL('user', array('act' => 'voucher'));}">
+                <span>我的券</span>
+            </a>
+        </li>
+        {if $fr_cp_settings['service_phone']}
+        <li>
+            <a class="mnav-box-list" href="tel:{$fr_cp_settings['service_phone']}">
+                <span>联系客服</span>
+            </a>
+        </li>
+        {/if}
+    </ul>
+</div>
+<div class="container" style="padding-bottom: 70px; padding-top: 50px;background-color: #f0f0f0;">
+    <style>
+        .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th{ vertical-align: middle;}
+  </style>
+    <form action='{php echo __MURL("order", array("act" => "done"));}' method="post" >
+        <div class="order_checkout">
+            <div style="background-color: white;padding:10px;">
+                <span class="icon_bus"></span> {$shift['start_station']['name']}
+                <span class="icon_arrow-left"></span>
+                <span class="icon_bus"></span> {$shift['end_station']['name']}
+                <p class="text-center" style="font-size:12px; color: #666;margin:10px;">{$fr_cp_settings['vehicle_type'][$shift['vehicle']['vehicle_type']]}</p>
+                <p class="text-center" style="font-size:12px; color: #666;margin:10px;">车牌号：{$shift['vehicle']['license_plate']}</p>
+            </div>
+
+            <div style="background-color: white;padding:10px;margin:10px 0;">
+                <p class="time margin-bottom-10"><span class="text-666">发车时间：</span>{php echo timeToStr($departure_time, 'Y-m-d');} 星期{php echo getChineseWeek($departure_time);} {php echo timeToStr($departure_time, 'H:i');}</p>
+                <div class="order_box" style="margin:8px 0;">
+                    <div class="clearfix line" style="padding:0;">
+                        <input type="hidden" name="postdata[seat_number]" id="hide_seat_number" value="{$seatNumber}" />
+                        <div>座位号：<span id="seat_number">{$seatNumber}</span> <a href="javascript:;" class="btn btn-sm btn-success pull-right" id="select-seat">选择座位</a></div>
+                    </div>
+                </div>
+                <div class="order_box">
+                    <div class="clearfix line" style="padding:0;">
+                        <span class="pull-left text-red">票价：￥{$shift['ticket_price']}<div class="input-group col-xs-4 pull-right" style="padding:0; margin-top: 6px;">
+                            <span class="input-group-addon number_minus">-</span>
+                            <input type="tel" style="padding:6px;border:1px #dbdbdb solid;margin:0;background-color: #dbdbdb;" id="number" min="1" max="{$shift['surplus_votes']}" class="form-control text-center" aria-label="购票数量" name="postdata[number]" value="1">
+                            <span class="input-group-addon number_increase">+</span>
+                        </div>(余票<span class="text-red">{$shift['surplus_votes']}</span>张)</span>
+                    </div>
+                </div>
+            </div>
+            <h4 class="text-666 margin-bottom-10">购票人信息</h4>
+            <div class="order_box  margin-bottom-10" style="background-color: white;">
+                <div class="clearfix line" style="border-bottom:none;">
+                    <span style="padding:0">
+                        <input name="postdata[name]" type="text" placeholder="您的真实姓名" class='form-control xm'  value="{$profile['name']}" />
+                    </span>
+                </div>
+                <div class="clearfix line" style="border-bottom:none;">
+                    <div style="padding:0">
+                        <input name="postdata[phone]" type="tel" placeholder="您的手机号码" class='form-control dh' value="{$profile['phone']}" />
+                    </div>
+                </div>
+                <div class="clearfix line" style="border-bottom:none;">
+                    <div style="padding:0">
+                        <input name="postdata[idcard]" required type="text" placeholder="您的身份证" class='form-control id' value="{$profile['idcard']}" />
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="order_box margin-bottom-10">
+                <div class="text-red line text-center bornone" id="xuzhiyushuoming" style="padding:10px;background-color: white;">
+                    请阅读《购票须知与退票说明》
+                    <span class="caret" style="color:#333;"></span>
+                </div>
+                <div class="clearfix line hide content" style="height:auto;">
+                    <p style="line-height:1.8;">{php echo nl2br($fr_cp_settings['content']);}</p>
+                </div>
+            </div>
+        </div>
+       {if $shift['enable_vouchers'] == 1}
+        <div class="margin-bottom-10">
+            <select class="form-control" name="postdata[voucher]" id="voucher">
+                <option value="0">未使用代金券</option>
+                {loop $voucher $item}
+                <option value="{$item['id']}">{$item['name']}（{$item['tips']}）</option>
+                {/loop}
+            </select>
+        </div>
+        {/if}
+        {if $addons}
+        <h4 class="text-666 margin-bottom-10">附加项选择</h4>
+        <div class="addons">
+            {loop $addons $addone}
+            <div class="checkbox"><label><input type="checkbox" class="addons_input" name="postdata[addons][]" value="{$addone['id']}" /> {$addone['title']}[￥{$addone['price']}]</label></div>
+            {/loop}
+        </div>
+        {/if}
+        <p>
+            <input name="postdata[shift_id]" type="hidden" value="{$shift['shift_id']}" />
+            <input name="postdata[start_station_id]" type="hidden" value="{$shift['start_station_id']}" />
+            <input name="postdata[end_station_id]" type="hidden" value="{$shift['end_station_id']}" />
+            <input name="postdata[departure_time]" type="hidden" value="{$departure_time}" />
+            <input name="fr_cp_token" type="hidden" value="{$_SESSION['fr_cp_token']}" />
+        </p>
+        <div class="order_buy_box clearfix">
+            <div class="order_total_price">订单总额：<span id="total_price" class="text-red">￥{$shift['ticket_price']}</span></div>
+            <button type="submit" name="submit" class="btn btn-primary btn-dp order_buy_btn" value="确定">
+                <span>同意购票须知并</span><br>
+                {if $shift['method'] == 1}
+                确定预订
+                {else}
+                确定支付
+                {/if}
+            </button>
+        </div>
+    </form>
+</div>
+<div id="seat_number_box">
+    <div id="seat_number_list" class="clearfix">
+        {loop $seatNumberList $seat}
+        <a href="javascript:;" class="seat btn btn-xs {if $seat['occupied'] == 0}btn-default {else} btn-danger{/if} {if $seat['number'] == $seatNumber} btn-success selected{/if}" data-seat="{$seat['number']}" data-occupied="{$seat['occupied']}">
+            <i class="fa fa-check {if $seat['number'] != $seatNumber} hidden{/if}"></i>
+            <span class="{if $seat['number'] == $seatNumber} hidden{/if}">{$seat['number']}</span>
+        </a>
+        {/loop}
+        <button id="confirmSelectSeat" class="btn btn-primary btn-block">确定选择</button>
+        <button id="cancelSelectSeat" class="btn btn-info btn-block">取消选择</button>
+        <p class="text-center text-warning" style="width: 100%;">提交订单后如果选中座位已售出，系统将自动分配座位</p>
+    </div>
+
+</div>
+<script>
+var route_id = "{$shift['route_id']}";
+$("#side-nav").click(function() {
+    if($(".side-nav").hasClass("hide")) {
+        $(".side-nav").removeClass("hide");
+    }else{
+        $(".side-nav").addClass("hide");
+    }
+});
+$(".container").click(function() {
+    if(!$(".side-nav").hasClass("hide")) {
+        $(".side-nav").addClass("hide");
+    }
+});
+$("#number").focus(function() {
+    $(this).val('');
+});
+$("#number").blur(function() {
+    var number = Number($(this).val());
+    var min = 1, max = Number($(this).attr('max'));
+    number = Math.min(max, Math.max(min, number));
+    $(this).val(number);
+    change_price();
+});
+$(".number_increase").click(function() {
+    var number = Number($("#number").val());
+    var max = Number($("#number").attr('max'));
+    if (number >= max) {
+        return false;
+    }
+    $("#number").val(number + 1);
+    change_price();
+});
+$(".number_minus").click(function() {
+    var number = Number($("#number").val());
+    if (number <= 1) {
+        return false;
+    }
+    $("#number").val(number - 1);
+    change_price();
+});
+$("#xuzhiyushuoming").click(function(){
+    if ($(this).hasClass('bornone')) {
+        $(this).removeClass('bornone').siblings('.content').removeClass('hide');
+    }else{
+        $(this).addClass('bornone').siblings('.content').addClass('hide');
+    }
+})
+$("#voucher").change(function() {
+    change_price();
+});
+$(".addons_input").click(function() {
+    change_price();
+});
+function change_price() {
+    var ticket_price = "{$shift['ticket_price']}";
+    var number = $("#number").val();
+    var voucher = $("#voucher").val();
+    var addons_id = '';
+    $(".addons_input").each(function(){
+        if ($(this).prop('checked')) {
+            addons_id += addons_id == '' ? $(this).val() : "," + $(this).val();
+        }
+    });
+    var url = '{php echo __MURL("order", array("act" => "changeprice"))}';
+    var data = {ticket_price:ticket_price, number:number, voucher:voucher, addons_id:addons_id, route_id:route_id};
+    $.post(url, data, function(price) {
+        $("#total_price").text("￥" + price);
+    });
+}
+</script>
+<script>
+    $("#select-seat").on("click", function(){
+        $("#seat_number_box").show();
+    });
+    $("#confirmSelectSeat").on("click", function() {
+        var seat_number = '';
+        $("#seat_number_list").find(".selected").each(function(){
+            seat_number += seat_number == '' ? $(this).data("seat") : "," + $(this).data("seat");
+        });
+        if(seat_number != '') {
+            $("#hide_seat_number").val(seat_number);
+            $("#seat_number").text(seat_number);
+        }
+        $("#seat_number_box").hide();
+    });
+    $("#cancelSelectSeat").on("click", function() {
+        $("#seat_number_box").hide();
+    });
+    $(".seat").on("click", function() {
+        var occupied = $(this).data("occupied");
+        if (occupied == 1) {
+            return false;
+        }
+        var number = $("#number").val();
+        var selected = $("#seat_number_list").find(".selected");
+        if (selected.length == number && !$(this).hasClass("selected")) {
+            var obj = $("#seat_number_list").find(".selected").eq(0);
+            obj.removeClass("selected btn-success").addClass("btn-default");
+            obj.find("span").removeClass("hidden");
+            obj.find("i").addClass("hidden");
+        }
+        if ($(this).hasClass("selected")) {
+            $(this).removeClass("selected btn-success").addClass("btn-default");
+            $(this).find("span").removeClass("hidden");
+            $(this).find("i").addClass("hidden");
+        }else{
+            $(this).addClass("selected btn-success").removeClass("btn-default");
+            $(this).find("span").addClass("hidden");
+            $(this).find("i").removeClass("hidden");
+        }        
+    });
+</script>
+{template 'footer'}

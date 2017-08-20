@@ -1,0 +1,47 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="{php echo __WURL('route');}">路线列表</a></li>
+        <li class="active"><a href="{php echo __WURL($fr_model);}">发车时间设置</a></li>
+        <li><a href="{php echo __WURL($fr_model, array('act' => 'add'));}">添加发车时间设置</a></li>
+    </ul>
+
+    <div style="padding-top:15px;"></div>
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                发车时间列表
+            </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                    <tr>
+                        <th>ID</th>						
+                        <th>时间</th>
+                        <th style="text-align:center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if $result['list']}
+                    {loop $result['list'] $row}
+                        <tr>			
+                            <td class="row-first">{$row['id']}</td>
+                            <td>{$row['time']}</td>
+                            <td align="center">
+                                <a href="{php echo __WURL($fr_model, array('act' => 'add', 'id' => $row['id']));}" title="编辑" class='btn btn-default btn-sm'><i class="fa fa-edit"></i></a> 
+                                <a href="{php echo __WURL($fr_model, array('act' => 'delete', 'id' => $row['id']));}" title="删除" class='btn btn-default btn-sm' onclick="return confirm('确定要删除吗?')"><i class="fa fa-remove"></i></a>
+                            </td>
+                        </tr>
+                    {/loop}
+                    {else}
+                        <tr>
+                            <td colspan="3" align='center'>暂无数据</td>
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
+            {$result['pager']}
+        </div>
+    </div>
+</div>
+{template 'common/footer'}
+{template 'web/tips'}

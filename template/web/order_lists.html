@@ -1,0 +1,274 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{php echo __WURL($fr_model);}">{php echo $fr_web_page_title[$fr_model]}列表</a></li>
+    </ul>
+    <div class="panel panel-info">
+        <div class="panel-heading">筛选</div>
+        <div class="panel-body">
+            <form action="" method="get" class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">路线</label>
+                    <div class="col-sm-6 col-md-8 col-lg-8 col-xs-12">
+                        <select name="route_id" id="route_id" class="form-control">
+                            <option value="" selected="selected">所有路线</option>
+                            {loop $route_all $row}
+                            <option value="{$row['id']}" {if $row['id'] == $_GPC['route_id']} selected="selected"{/if}>{$row['name']}</option>
+                            {/loop}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">班次</label>
+                    <div class="col-sm-6 col-md-8 col-lg-8 col-xs-12">
+                        <div class="col-sm-6 col-md-4 col-lg-4 col-xs-12" style="padding: 0;">
+                            <input type="text" name="date"  value="{$_GPC['date']}" placeholder="请选择日期时间" readonly="readonly" class="datetimepicker form-control" style="padding-left:12px;" />
+                        </div>
+                        <div class="col-sm-6 col-md-8 col-lg-8 col-xs-12">
+                            <select name="shift_id" id="shift_id" class="form-control">
+                                <option value="" selected="selected">所有班次</option>
+                                {if $shift_all}
+                                {loop $shift_all $row}
+                                <option value="{$row['id']}" {if $row['id'] == $_GPC['shift_id']} selected="selected"{/if}>
+                                        发车时间：{$row['time']}
+                            </option>
+                            {/loop}
+                            {/if}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">状态</label>
+                <div class="col-sm-6 col-md-8 col-lg-8 col-xs-12">
+                    <select name="status" class="form-control">
+                        <option value="" selected="selected">所有</option>
+                        <option value="1">已成功</option>
+                        <option value="0">进行中</option>
+                        <option value="-1">已取消</option>
+                        <option value="2">已退票</option>
+                        <option value="3">改签</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">售票员</label>
+                <div class="col-sm-6 col-md-8 col-lg-8 col-xs-12">
+                    <div class="col-sm-5 col-xs-12" style="padding: 0;">
+                        <select name="admin_uid" class="form-control">
+                            <option value="" selected="selected">所有</option>
+                            {loop $admin_uids $admin}
+                            <option value="{$admin['admin_uid']}">{php echo getAdminName($admin['admin_uid']);}</option>
+                            {/loop}
+                        </select>
+                    </div>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" style=" margin-left: 0">订单来源</label>
+                    <div class="col-sm-3 col-md-4 col-xs-12">
+                        <select name="froms" class="form-control">
+                            <option value="" {if $froms == ""} selected="selected"{/if}>所有</option>
+                            <option value="WEB" {if $froms =="WEB"} selected="selected"{/if}>网页</option>
+                            <option value="mobile" {if $froms == "mobile"} selected="selected"{/if}>微信</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户信息</label>
+                <div class="col-sm-6 col-md-8 col-lg-8 col-xs-12">
+                    <div class="col-sm-3 col-md-4 col-xs-12" style="padding: 0;">
+                        <input type="text" name="name" value="{$_GPC['name']}" placeholder="姓名" class="form-control" />
+                    </div>
+                    <div class="col-sm-3 col-md-4 col-xs-12" style="padding-right: 0;">
+                        <input type="text" name="idcard" value="{$_GPC['idcard']}" placeholder="身份证号码" class="form-control" />
+                    </div>
+                    <div class="col-sm-3 col-md-4 col-xs-12">
+                        <input type="text" name="phone" value="{$_GPC['phone']}" placeholder="手机号码" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">单号</label>
+                <div class="col-sm-6 col-md-8 col-lg-8 col-xs-12">
+                    <div class="col-sm-5 col-xs-12" style="padding: 0;">
+                        <input type="text" name="order_sn" value="{$_GPC['order_sn']}" placeholder="订单号" class="form-control" />
+                    </div>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" style=" margin-left: 0">座位号</label>
+                    <div class="col-sm-3 col-md-4 col-xs-12">
+                        <input type="text" name="seat_number" value="{$_GPC['seat_number']}" placeholder="座位号" class="form-control" />
+                    </div>
+                </div>
+                <div class="pull-right col-xs-12 col-sm-3 col-md-2 col-lg-2">
+                    <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                    <input type="hidden" name="c" value="site"/>
+                    <input type="hidden" name="a" value="entry"/>
+                    <input type="hidden" name="do" value="order"/>
+                    <input type="hidden" name="m" value="fr_cp"/>
+                    <input type="hidden" name="token" value="{$_W['token']}"/>
+                    <input class="btn btn-primary" type="submit" name="export_submit" id="export_submit" value="导出">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <a class="btn btn-primary {if is_null($status) && $check_ticket != '1'} disabled{/if}" href="{php echo __WURL($fr_model);}">全部</a>
+    <a class="btn btn-primary {if $status == '1'} disabled{/if}" href="{php echo __WURL($fr_model, array('status' => '1'));}">已成功</a>
+    <a class="btn btn-primary {if $status == '0'} disabled{/if}" href="{php echo __WURL($fr_model, array('status' => '0'));}">进行中</a>
+    <a class="btn btn-primary {if $status == '-1'} disabled{/if}" href="{php echo __WURL($fr_model, array('status' => '-1'));}">已取消</a>
+    <a class="btn btn-primary {if $status == '2'} disabled{/if}" href="{php echo __WURL($fr_model, array('status' => '2'));}">已退票</a>
+    <a class="btn btn-primary {if $status == '3'} disabled{/if}" href="{php echo __WURL($fr_model, array('status' => '3'));}">改签</a>
+    <a class="btn btn-primary {if $check_ticket == '1'} disabled{/if}" href="{php echo __WURL($fr_model, array('check_ticket' => '1'));}">已核销</a>
+</div>
+<div style="padding-top:15px;"></div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        {php echo $fr_web_page_title[$fr_model]}列表
+        <a href="javascript:;" class="pull-right" id="expand-compress"><i class="fa fa-expand"></i></a>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover">
+            <thead class="navbar-inner">
+                <tr>
+                    <th style="width:60px;">ID</th>
+                    <th style="width: 115px;">订单号</th>
+                    <th style="width: 160px;">班次</th>
+                    <th style="width: 130px;">发车时间</th>
+                    <th>座位号</th>
+                    <th>金额</th>
+                    <th style="width: 100px;">状态</th>
+                    <th>核销</th>
+                    <th>订单源</th>
+                    <th style="text-align:left;width: 140px;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {if $result['list']}
+                {loop $result['list'] $row}
+                <tr>			
+                    <td class="row-first">{$row['id']}</td>
+                    <td>{$row['order_sn']}</td>
+                    <td>
+                        <p>出发点：{$row['shift']['start_station']['name']}</p>
+                        <p>目的点：{$row['shift']['end_station']['name']}</p>
+                    </td>
+                    <td>{php echo timeToStr($row['departure_time'], 'Y-m-d H:i')}</td>
+                    <td>{$row['seat_number']}</td>
+                    <td>
+                        <i class="fa fa-cny"></i>{if $row['status'] == 2}
+                        {php echo $row['price'] + $row['refund_fee']}
+                        {else}
+                        {php echo intval($row['price'])}
+                        {/if}
+                    </td>
+                    <td>
+                        {if $row['status'] == 0}
+                        <span class="label label-warning">待付款</span>
+                        {elseif $row['status'] == 1}
+                        <span class="label label-success">预订成功</span>
+                        {elseif $row['status'] == 2}
+                        <span class="label label-default">已退票</span>
+                        {elseif $row['status'] == 3}
+                        <span class="label label-info">改签</span>
+                        {else}
+                        <span class="label label-danger">取消预订</span>
+                        {/if}
+                    </td>
+                    <td style="white-space: initial; text-overflow: initial">
+                        {if $row['check_ticket'] == 1}
+                        核销人：{php echo getNicknameByOpenid($row['check_ticket_openid'])}<br>
+                        核销时间：{php echo timeToStr($row['check_ticket_time'])}<br>
+                        {else}
+                        --
+                        {/if}
+                    </td>
+                    <td>
+                        {if $row['froms'] == 'WEB'}
+                        网页
+                        {else}
+                        微信
+                        {/if}
+                    </td>
+                    <td align="left" style="overflow: visible;">
+                        <div class="btn-group">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                订单操作<span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" style="min-width: 125px;">
+                                <li><a href="{php echo __WURL($fr_model, array('act' => 'info', 'id' => $row['id']));}" title="详细"><i class="fa fa-credit-card text-info"></i> 订单详情</a></li>
+                                <li><a href="{php echo __WURL($fr_model, array('act' => 'print', 'id' => $row['id']));}" target="_blank" title="打印"><i class="fa fa-print text-primary"></i> 打印订单</a></li>
+                                {if $row['isRefund']}
+                                <li><a href="{php echo __WURL($fr_model, array('act' => 'return', 'id' => $row['id']));}" title="退票" onclick="return confirm('确定退票吗?')"><i class="fa fa-reply text-danger"></i> 退票</a> </li>
+                                {/if}
+                                {if $row['isChange']}
+                                <li><a href="{php echo __WURL($fr_model, array('act' => 'changing', 'id' => $row['id']));}" title="改签"><i class="fa fa-refresh text-danger"></i> 改签</a></li> 
+                                {/if}
+                                {if $row['status'] == -1}
+                                <li><a href="{php echo __WURL($fr_model, array('act' => 'delete', 'id' => $row['id']));}" title="删除" onclick="return confirm('确定要删除吗?')"><i class="fa fa-remove"></i> 删除</a></li>
+                                {/if}
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                {/loop}
+                {else}
+                <tr>
+                    <td colspan="10" align='center'>暂无数据</td>
+                </tr>
+                {/if}
+            </tbody>
+        </table>
+        {$result['pager']}
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+    $("#route_id").on("change", function() {
+        var route_id = $(this).val();
+        if (route_id == '') {
+            $("#shift_id").html('<option value="" selected="selected">所有班次</option>');
+            return false;
+        }
+        $.post('{php echo __WURL("order", array("act" => "get_shift"))}', {route_id: route_id}, function(json) {
+            if (json.html == '') {
+                $("#shift_id").html('<option value="" selected="selected">所有班次</option>');
+            } else {
+                $("#shift_id").html(json.html);
+            }
+        }, 'JSON')
+    })
+    require(["datetimepicker"], function() {
+        $(function() {
+            $(".datetimepicker").each(function() {
+                var option = {
+                    lang: "zh",
+                    step: "10",
+                    timepicker: false, closeOnDateSelect: true,
+                    format: "Y-m-d"};
+                $(this).datetimepicker(option);
+            });
+        });
+    });
+    $(function(){
+        $("#expand-compress").click(function() {
+            if ($(this).find('i').hasClass('fa-expand')) {
+                setCookie("expand-compress", 'compress');
+                $(this).find('i').addClass('fa-compress').removeClass('fa-expand');
+                $(this).parents('.col-xs-12').addClass('col-lg-12 col-sm-12').removeClass("col-sm-9 col-lg-10").siblings('.big-menu').hide();
+            }else{
+                setCookie("expand-compress", 'expand');
+                $(this).find('i').removeClass('fa-compress').addClass('fa-expand');
+                $(this).parents('.col-xs-12').removeClass('col-lg-12 col-sm-12').addClass("col-sm-9 col-lg-10").siblings('.big-menu').show();
+            }
+         });
+        if (getCookie("expand-compress") == 'compress') {
+            $("#expand-compress").find('i').addClass('fa-compress').removeClass('fa-expand');
+            $("#expand-compress").parents('.col-xs-12').addClass('col-lg-12 col-sm-12').removeClass("col-sm-9 col-lg-10").siblings('.big-menu').hide();
+        }else{
+            $("#expand-compress").find('i').removeClass('fa-compress').addClass('fa-expand');
+            $("#expand-compress").parents('.col-xs-12').removeClass('col-lg-12 col-sm-12').addClass("col-sm-9 col-lg-10").siblings('.big-menu').show();
+        }
+        
+    })
+</script>
+{template 'web/tips'}
+{template 'common/footer'}

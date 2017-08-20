@@ -1,0 +1,108 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{php echo __WURL($fr_model, array('route_id' => $route_id));}">{php echo $fr_web_page_title[$fr_model]}列表</a></li>
+        <li><a href="{php echo __WURL($fr_model, array('act' => 'add', 'route_id' => $route_id));}">添加{$route['name']}{php echo $fr_web_page_title[$fr_model]}</a></li>
+        <li><a href="{php echo __WURL('shifttime');}">发车时间设置</a></li>
+    </ul>
+    <div class="panel panel-info">
+        <div class="panel-heading">筛选</div>
+        <div class="panel-body">
+            <form action="./index.php" method="post" class="form-horizontal" role="form">
+                <input type="hidden" name="c" value="site">
+                <input type="hidden" name="a" value="entry">
+                <input type="hidden" name="do" value="{$fr_model}">
+                <input type="hidden" name="m" value="fr_cp" />
+                <input name="token" type="hidden" value="{$_W['token']}" />
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">线路</label>
+                    <div class="col-sm-4">
+                        <select name="route_id" class="form-control">
+                            {loop $route_all $row}
+                            <option value="{$row['id']}" {if $row['id'] == $_GPC['route_id']} selected="selected"{/if}>{$row['name']}</option>
+                            {/loop}
+                        </select>
+                    </div>
+                    <div class=" col-xs-12 col-sm-2 col-lg-2">
+                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div style="padding-top:15px;"></div>
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                {php echo $fr_web_page_title[$fr_model]}列表
+            </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                    <tr>					
+                        <th style="width: 350px;">路线</th>
+                        <th style="width: 150px;">发车时间</th>
+                        <th style="width: 140px;">总票数</th>
+                        <th>票价</th>
+                        <th>购票方式</th>
+                        <th class="hidden">状态</th>
+                        <th style="width: 150px; text-align:center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if $result['list']}
+                    {loop $result['list'] $row}
+                        <tr>
+                            <td>
+                                <p>出发点：{$row['route']['start_station']['name']}</p>
+                                <p>目的点：{$row['route']['end_station']['name']}</p>
+                            </td>
+                            <td>
+                                {$row['time']}
+                            </td>
+                            <td>{$row['total_votes']}</td>
+                            <td>{$row['ticket_price']}</td>
+                            <td>{if $row['method'] == 1}只预定{else}只支付{/if}</td>
+                            <td class="hidden">
+                                {if $row['status'] == 1}
+                                <a class="setStatus" data-id="{$row['id']}" href="{php echo __WURL($fr_model, array('act' => 'setStatus', 'id' => $row['id']));}"><i class="fa fa-check text-success"></i></a>
+                                {else}
+                                <a class="setStatus" data-id="{$row['id']}" href="{php echo __WURL($fr_model, array('act' => 'setStatus', 'id' => $row['id']));}"><i class="fa fa-close text-danger"></i></a>
+                                {/if}
+                            </td>
+                            <td align="center">
+                                <a href="{php echo __WURL('shift_vehicle', array('act' => 'lists', 'shift_id' => $row['id']));}" title="司机列表" class='btn btn-default btn-sm'><i class="fa fa-users"></i></a> 
+                                <a href="{php echo __WURL($fr_model, array('act' => 'add', 'id' => $row['id']));}" title="编辑" class='btn btn-default btn-sm'><i class="fa fa-edit"></i></a> 
+                                <a href="{php echo __WURL($fr_model, array('act' => 'delete', 'id' => $row['id']));}" title="删除" class='btn btn-default btn-sm' onclick="return confirm('确定要删除吗（将同时删除该班次的所有订单信息）?')"><i class="fa fa-remove"></i></a>
+                            </td>
+                        </tr>
+                    {/loop}
+                    {else}
+                        <tr>
+                            <td colspan="7" align='center'>暂无数据</td>
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
+            {$result['pager']}
+        </div>
+    </div>
+</div>
+<script>
+    $(".setStatus").on('click', function() {
+        var _this = $(this), url = _this.attr('href');
+        $.post(url, {id : _this.data('id')}, function(res) {
+            if (res.type == 'success') {
+                if (res.message == 1) {
+                    _this.find("i").addClass('fa-check text-success').removeClass('fa-close text-danger');
+                }else{
+                    _this.find("i").removeClass('fa-check text-success').addClass('fa-close text-danger');
+                }
+            }else{
+                alert(res.message);
+            }
+        }, "JSON");
+        return false;
+    });
+</script>
+{template 'common/footer'}
+{template 'web/tips'}

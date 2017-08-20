@@ -1,0 +1,335 @@
+{template 'common/header'}
+<div class="main">
+	<ul class="nav nav-tabs">
+            <li><a href="{php echo __WURL($fr_model, array( 'route_id' => $route_id));}">{php echo $fr_web_page_title[$fr_model]}列表</a></li>
+            <li class="active"><a href="{php echo __WURL($fr_model, array('act' => 'add', 'route_id' => $route_id));}">添加{php echo $fr_web_page_title[$fr_model]}</a></li>
+	</ul>
+    
+    <div class="">
+	<form action="" class="form-horizontal form" method="post" autocomplete="off">
+		<input type="hidden" name="id" value="{$item['id']}">
+		<input type="hidden" name="token" value="{$_W['token']}" />
+		<input type="hidden" name="act" value="update" />
+		<div class="panel panel-default">
+                        <div class="panel-heading" id="paoject_info">
+                            {if !empty($id)}修改{else}添加{/if}{php echo $fr_web_page_title[$fr_model]}信息
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">线路</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">{$route['name']}<input type="hidden" name="postdata[route_id]" value="{$route['id']}"/></p>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">始发点</label>
+                                    <div class="col-sm-10">
+                                        <div class="row row-fix">
+                                            <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7" style="padding: 0 5px;">
+                                                <div class="row row-fix selectList">
+                                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                                                        <p class="form-control-static text-center">{php echo getDataById('area', $route['start_station']['province_id'], 'name', '-');}</p>
+                                                    </div>
+                                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                                                        <p class="form-control-static text-center">{php echo getDataById('area', $route['start_station']['city_id'], 'name', '-');}</p>
+                                                    </div>
+                                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                                                        <p class="form-control-static text-center">{php echo getDataById('area', $route['start_station']['district_id'], 'name', '-');}</p>
+                                                    </div>
+                                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                                                        <p class="form-control-static text-center">{php echo getDataById('station', $route['start_station_id'], 'name', '');}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2" style="padding: 0 5px;">
+                                                <input type="text" name="postdata[datetime]"  value="{$item['datetime']}" placeholder="请选择日期时间" class="datetimepicker form-control" style="padding-left:12px;" />
+                                            </div>
+                                            <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="padding: 0 5px;">
+                                                <input type="text" placeholder="票价" class="form-control" name="postdata[ticket_price]" value="{$item['ticket_price']}" />
+                                            </div>
+                                            <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="padding: 0 5px;">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" value="1" disabled="" name='recommend' {if $route['recommend'] == 1} checked{/if} /> 推荐
+                                                    </label>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">配客点</label>
+                                    <div class="col-sm-10">
+                                        {if $item['shift_station']}
+                                        {loop $item['shift_station'] $shift_station}
+                                        <div class="row row-fix" style="margin-bottom:8px;">
+                                            <a href="javascript:;" class="btn btn-danger btn-sm ShiftStationRemove" data-type="start" data-id="{$shift_station['id']}"><i class="fa fa-remove"></i></a>
+                                            <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+                                                <div class="row row-fix selectList">
+                                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                                                        <select name="province_id" data-id='fr_city' class="form-control fr_area fr_province">
+                                                            <option value="0">省/直辖市</option>
+                                                            {loop $province $area_item}
+                                                            <option value="{$area_item['id']}" {if $area_item['id'] == $item['province_id']} selected="selected"{/if}>{$area_item['name']}</option>
+                                                            {/loop}
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                                                        <select name="city_id" data-id='fr_district' class="form-control fr_area fr_city">
+                                                            <option value="0">市</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                                                        <select name="district_id" class="form-control fr_area fr_district">
+                                                            <option value="0">区/县</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                                                        <select name="shift_station[station][{$shift_station['id']}]" data-placeholder="请选择配客点" class="form-control station">
+                                                            {loop $station_all $station}
+                                                            <option value="{$station['id']}" {if $station['id'] == $shift_station['station_id']} selected{/if}>{$station['name']}</option>
+                                                            {/loop}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2" style="padding:0 5px;">
+                                                <input type="text" name="shift_station[time][{$shift_station['id']}]"  value="{$shift_station['datetime']}" placeholder="请选择日期时间" class="datetimepicker form-control" style="padding-left:12px;" />
+                                            </div>
+                                            <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="padding:0 5px;">
+                                                <input type="text" placeholder="票价" class="form-control" name="shift_station[ticket_price][{$shift_station['id']}]" value="{$shift_station['ticket_price']}" />
+                                            </div>
+                                            <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="padding:0 5px;">
+                                                <div class="checkbox">
+                                                    <label>
+                                                      <input type="checkbox" value="1" {if $shift_station['recommend']} checked {/if} name="shift_station[recommend][{$shift_station['id']}]"> 推荐
+                                                    </label>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                        {/loop}
+                                        {/if}
+                                        <input type="hidden" id="delete_shift_station" name="delete_shift_station" value="" />
+                                        <p><a href="javascript:;" id="addShiftStation" class="btn" style="color: blue; outline: none; text-decoration: none;"><i class="fa fa-plus-circle"></i> 添加配客点</a></p>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">下客点</label>
+                                    <div class="col-sm-10">
+                                        {if $item['shift_end_station']}
+                                        {loop $item['shift_end_station'] $shift_end_station}
+                                        <div class="row row-fix" style="margin-bottom:8px;">
+                                            <a href="javascript:;" class="btn btn-danger btn-sm ShiftStationRemove" data-type="end" data-id="{$shift_end_station['id']}"><i class="fa fa-remove"></i></a>
+                                            <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+                                                <div class="row row-fix selectList">
+                                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                                                        <select name="province_id" data-id='fr_city' class="form-control fr_area fr_province">
+                                                            <option value="0">省/直辖市</option>
+                                                            {loop $province $area_item}
+                                                            <option value="{$area_item['id']}" {if $area_item['id'] == $item['province_id']} selected="selected"{/if}>{$area_item['name']}</option>
+                                                            {/loop}
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                                                        <select name="city_id" data-id='fr_district' class="form-control fr_area fr_city">
+                                                            <option value="0">市</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                                                        <select name="district_id" class="form-control fr_area fr_district">
+                                                            <option value="0">区/县</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                                                        <select name="shift_end_station[station][{$shift_end_station['id']}]" data-placeholder="请选择下客点" class="form-control station">
+                                                            {loop $station_all $station}
+                                                            <option value="{$station['id']}" {if $station['id'] == $shift_end_station['end_station_id']} selected{/if}>{$station['name']}</option>
+                                                            {/loop}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="padding:0 5px;">
+                                                <div class="checkbox">
+                                                    <label>
+                                                      <input type="checkbox" value="1" {if $shift_end_station['recommend']} checked {/if} name="shift_end_station[recommend][{$shift_end_station['id']}]"> 推荐
+                                                    </label>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                        {/loop}
+                                        {/if}
+                                        <input type="hidden" id="delete_shift_end_station" name="delete_shift_end_station" value="" />
+                                        <p><a href="javascript:;" id="addShiftEndStation" class="btn" style="color: blue; outline: none; text-decoration: none;"><i class="fa fa-plus-circle"></i> 添加下客点</a></p>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">终点站</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">{php echo getDataById('station', $route['end_station_id'], 'name');}</p>
+                                    </div>
+				</div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">选择车辆</label>
+                                    <div class="col-sm-8">
+                                        <select name="postdata[vehicle_id]" id="vehicle_id" class="form-control">
+                                            {loop $vehicle_all $vehicle}
+                                            <option value="{$vehicle['id']}" data-seats="{$vehicle['seat_numbers']}" {if $vehicle['id'] == $item['vehicle_id']} selected{/if}>车牌号：{$vehicle['license_plate']}；司机姓名：{$vehicle['driver_name']}</option>
+                                            {/loop}
+                                        </select>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">总票数</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" readonly class="form-control" id="total_votes" name="postdata[total_votes]" value="{$item['total_votes']}" />
+                                    </div>
+				</div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">购票方式</label>
+                                    <div class="col-sm-8">
+                                        <label class="radio-inline"><input type="radio" name="postdata[method]" value="0" {if 0 == $item['method']} checked{/if} /> 只支付</label>
+                                        <label class="radio-inline"><input type="radio" name="postdata[method]" value="1" {if 1 == $item['method']} checked{/if} /> 只预订</label>
+                                    </div>
+				</div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">启用代金券</label>
+                                    <div class="col-sm-8">
+                                        <label class="radio-inline"><input type="radio" name="postdata[enable_vouchers]" value="1" {if 1 == $item['enable_vouchers']} checked{/if} /> 是</label>
+                                        <label class="radio-inline"><input type="radio" name="postdata[enable_vouchers]" value="0" {if 0 == $item['enable_vouchers']} checked{/if} /> 否</label>
+                                    </div>
+				</div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否可退票</label>
+                                    <div class="col-sm-8">
+                                        <label class="radio-inline"><input type="radio" name="postdata[refund_ticket]" value="1" {if 1 == $item['refund_ticket']} checked{/if} /> 是</label>
+                                        <label class="radio-inline"><input type="radio" name="postdata[refund_ticket]" value="0" {if 0 == $item['refund_ticket']} checked{/if} /> 否</label>
+                                    </div>
+				</div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启</label>
+                                    <div class="col-sm-8">
+                                        <label class="radio-inline"><input type="radio" name="postdata[status]" value="1" {if 1 == $item['status']} checked{/if} /> 是</label>
+                                        <label class="radio-inline"><input type="radio" name="postdata[status]" value="0" {if 0 == $item['status']} checked{/if} /> 否</label>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">&nbsp;</label>
+                                    <div class="col-sm-9">
+                                        <button type="submit" class="btn btn-primary col-lg-1" name="submit" value="提交">提交</button>
+                                    </div>
+				</div>
+			</div>
+		</div>
+	</form>
+    </div>
+</div>
+<script type="text/template" id="ShiftStationTemplate">
+<div class="row row-fix" style="margin-bottom:8px;">
+    <a href="javascript:;" class="btn btn-danger btn-sm ShiftStationRemove" data-type="start"><i class="fa fa-remove"></i></a>
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+        <div class="row row-fix selectList">
+            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                <select name="province_id" data-id='fr_city' class="form-control fr_area fr_province">
+                    <option value="0">省/直辖市</option>
+                    {loop $province $area_item}
+                    <option value="{$area_item['id']}" {if $area_item['id'] == $item['province_id']} selected="selected"{/if}>{$area_item['name']}</option>
+                    {/loop}
+                </select>
+            </div>
+            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                <select name="city_id" data-id='fr_district' class="form-control fr_area fr_city">
+                    <option value="0">市</option>
+                </select>
+            </div>
+            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                <select name="district_id" class="form-control fr_area fr_district">
+                    <option value="0">区/县</option>
+                </select>
+            </div>
+            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                <select name="shift_station[station][{{index}}]" data-placeholder="请选择配客点" class="form-control station">
+                    <option value="0">请选择配客点</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2" style="padding:0 5px;">
+        <input type="text" name="shift_station[time][{{index}}]"  value="{php echo timeToStr('', 'Y-m-d H:i');}" placeholder="请选择日期时间" class="datetimepicker{{index}} form-control" style="padding-left:12px;" />
+    </div>
+    <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="padding:0 5px;">
+        <input type="text" placeholder="票价" class="form-control" name="shift_station[ticket_price][{{index}}]" value="" />
+    </div>
+    <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="padding:0 5px;">
+        <div class="checkbox">
+            <label>
+              <input type="checkbox" value="1" name='shift_station[recommend][{{index}}]'> 推荐
+            </label>
+         </div>
+    </div>
+</div>
+</script>
+<script type="text/template" id="ShiftEndStationTemplate">
+<div class="row row-fix" style="margin-bottom:8px;">
+    <a href="javascript:;" class="btn btn-danger btn-sm ShiftStationRemove" data-type="end"><i class="fa fa-remove"></i></a>
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+        <div class="row row-fix selectList">
+            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                <select name="province_id" data-id='fr_city' class="form-control fr_area fr_province">
+                    <option value="0">省/直辖市</option>
+                    {loop $province $area_item}
+                    <option value="{$area_item['id']}" {if $area_item['id'] == $item['province_id']} selected="selected"{/if}>{$area_item['name']}</option>
+                    {/loop}
+                </select>
+            </div>
+            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                <select name="city_id" data-id='fr_district' class="form-control fr_area fr_city">
+                    <option value="0">市</option>
+                </select>
+            </div>
+            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                <select name="district_id" class="form-control fr_area fr_district">
+                    <option value="0">区/县</option>
+                </select>
+            </div>
+            <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" style="padding:0 5px;">
+                <select name="shift_end_station[station][{{index}}]" data-placeholder="请选择下客点" class="form-control station">
+                    <option value="0">请选择下客点</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="padding:0 5px;">
+        <div class="checkbox">
+            <label>
+              <input type="checkbox" value="1" name='shift_end_station[recommend][{{index}}]'> 推荐
+            </label>
+         </div>
+    </div>
+</div>
+</script>
+<script type="text/javascript">
+var shift_station_index = {$index};
+var shift_end_station_index = {$shift_end_index};
+var get_area_url = '{php echo __WURL("station", array("act" => "getarea"));}';
+var get_station_url = '{php echo __WURL("station", array("act" => "getstation"));}';
+var option = {
+    lang : "zh",
+    step : 1,
+    timepicker : true,
+    closeOnDateSelect : true,
+    format : "Y-m-d H:i"
+};
+require(["datetimepicker"], function(){
+    $(function(){
+        $('.datetimepicker').datetimepicker(option);                   
+    });
+});
+//$("#total_votes").val($("#vehicle_id").find("option:selected").data('seats'));
+$("#vehicle_id").change(function(){
+    $("#total_votes").val($(this).find("option:selected").data('seats'));
+})
+$("#vehicle_id").change();
+</script>
+<script type="text/javascript" src="{__JS__}/web_shift_add.js"></script>
+{template 'common/footer'}

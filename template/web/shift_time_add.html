@@ -1,0 +1,70 @@
+{template 'common/header'}
+<div class="main">
+	<ul class="nav nav-tabs">
+        <li><a href="{php echo __WURL('route');}">路线列表</a></li>
+        <li><a href="{php echo __WURL($fr_model);}">发车时间设置</a></li>
+        <li class="active"><a href="{php echo __WURL($fr_model, array('act' => 'add'));}">添加发车时间设置</a></li>
+	</ul>
+    
+    <div class="">
+	<form action="" class="form-horizontal form" method="post" autocomplete="off">
+		<input type="hidden" name="id" value="{$item['id']}">
+		<input type="hidden" name="token" value="{$_W['token']}" />
+		<input type="hidden" name="act" value="update" />
+		<div class="panel panel-default">
+                        <div class="panel-heading" id="paoject_info">
+                            {if !empty($id)}修改{else}添加{/if}{php echo $fr_web_page_title[$fr_model]}
+			</div>
+			<div class="panel-body">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">时间</label>
+                                    <div class="col-sm-4">
+                                        <div class="row row-fix" style="margin-bottom:8px;">
+                                            <input type="text" placeholder="时间" class="form-control clockpicker" name="time[]" autocomplete="off" value="{$item['time']}" />
+                                        </div>
+                                        {if empty($id)}
+                                        <p><a href="javascript:;" id="addShiftTime" class="btn" style="color: blue; outline: none; text-decoration: none;"><i class="fa fa-plus-circle"></i> 添加时间</a></p>
+                                        {/if}
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">&nbsp;</label>
+                                    <div class="col-sm-9">
+                                        <button type="submit" class="btn btn-primary col-lg-1" name="submit" value="提交">提交</button>
+                                    </div>
+				</div>
+			</div>
+		</div>
+	</form>
+    </div>
+</div>
+<script type="text/template" id="ShiftStationTemplate">
+<div class="row row-fix" style="margin-bottom:8px;">
+    <a href="javascript:;" class="btn btn-danger btn-sm ShiftTimeRemove"><i class="fa fa-remove"></i></a>
+    <div class="col-xs-12 col-sm-2 col-md-2 col-lg-11" style="padding:0 5px 0 0;">
+    <input type="text" name="time[]"  value="" placeholder="时间" class="clockpicker{{index}} form-control" style="padding-left:12px;" />
+    </div>
+</div>
+</script>
+<script>
+var shift_time_index = 0;
+var option = {
+    autoclose: true
+};
+require(["clockpicker"], function(){
+    $(function(){
+        $('.clockpicker').clockpicker(option);                   
+    });
+});
+$("#addShiftTime").click(function(){
+    var template = $("#ShiftStationTemplate").html().replace(/{{index}}/g, shift_time_index);
+    $(this).parent().before(template);
+    $('.clockpicker' + shift_time_index).clockpicker(option);
+    shift_time_index++;
+});
+$(document).delegate(".ShiftTimeRemove", "click", function() {
+    $(this).parent().remove();  
+});
+</script>
+{template 'common/footer'}
+{template 'web/tips'}

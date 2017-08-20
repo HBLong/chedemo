@@ -1,0 +1,111 @@
+{template 'common/header'}
+<style>
+    .account-stat{overflow:hidden; color:#666;}
+    .account-stat .account-stat-btn{width:100%; overflow:hidden;}
+    .account-stat .account-stat-btn > div{text-align:center; margin-bottom:5px;margin-right:2%; float:left;width:42%; height:80px; padding-top:10px;font-size:16px; border-left:1px #DDD solid;}
+    .account-stat .account-stat-btn > div:first-child{border-left:0;}
+    .account-stat .account-stat-btn > div span{display:block; font-size:30px; font-weight:bold}
+</style>
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li {if $act == 'ticket'} class="active"{/if}><a href="{php echo __WURL('stats', array('act' => 'ticket'));}">售票数据统计</a></li>
+        <li {if $act == 'price'} class="active"{/if}><a href="{php echo __WURL('stats', array('act' => 'price'));}">销售额数据统计</a></li>
+        <li {if $act == 'car'} class="active"{/if}><a href="{php echo __WURL('stats', array('act' => 'car'));}">班车载客数据统计</a></li>
+    </ul>
+    <div class="panel panel-default" id="scroll">
+        <div class="panel-heading">
+            车票总数据
+        </div>
+        <div class="panel-body" id="scroll">
+            <div class="account-stat">
+                <div class="account-stat-btn">
+                    <div>总营业额<span><i class="fa fa-cny"></i>{$total_price}</span></div>
+                    <!--<div>总车票数<span>{$total_tickets_votes}</span></div>-->
+                    <div>总售票数<span>{$total_sell_tickets}</span></div>
+                    <!--<div>总余票数<span>{$total_surplus_votes}</span></div>-->
+                </div>
+            </div>
+            <div class="clearfix" style="margin-top:20px">
+                <form action="" id="form1">
+                    <input type="hidden" name="c" value="site">
+                    <input type="hidden" name="a" value="entry">
+                    <input type="hidden" name="do" value="stats">
+                    <input type="hidden" name="m" value="fr_cp" />
+                    <input type="hidden" name="act" value="{$act}" />
+                    <div class="col-lg-3">
+                    {php echo tpl_form_field_daterange('datelimit', array('start' => date('Y-m-d', $starttime),'end' => date('Y-m-d', $endtime)), '')}
+                    </div>
+                    <div class="col-lg-2">
+                        <select class="form-control" id="selectYear" name="year">
+                            <option value="0">按年份统计</option>
+                            {loop $years $year}
+                            <option value="{$year}">{$year}</option>
+                            {/loop}
+                        </select>
+                    </div>
+                    <input type="hidden" value="" name="scroll">
+                </form>
+            </div>
+            <div style="margin-top:20px">
+                <div id="ChartMain" style="width: 100%;height:400px;"></div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        require(['{__JS__}/echarts.js','daterangepicker'], function(echarts) {
+            var myChart = echarts.init(document.getElementById('ChartMain'));
+                option = {
+                    color:['#5cb85c','#5bc0de', '#f0ad4e', '#d48265', '#d9534f'],
+                    title: {
+                        text: '{$title}',
+                        subtext : '{$subtitle}'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    {if $legend}
+                    legend: {
+                        data: {php echo json_encode($legend);}
+                    },
+                    {/if}
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: {php echo json_encode($labels);}
+                    },
+                    yAxis: {
+                        type: 'value',
+                    },
+                    series: {php echo json_encode($series)}
+                };
+                myChart.setOption(option);
+            $('.daterange').on('apply.daterangepicker', function(ev, picker) {
+                $('input[name="scroll"]').val($(document).scrollTop());
+                $('#form1')[0].submit();
+            });
+            $("#selectYear").change(function(){
+                $('input[name="scroll"]').val($(document).scrollTop());
+                $('#form1')[0].submit();
+            })
+        });
+    </script>
+    {if $scroll} 
+    <script type="text/javascript">
+        var scroll = "{$scroll}";
+        $("html,body").animate({scrollTop: scroll}, 300);
+    </script>
+    {/if}
+</div>
+{template 'common/footer'}
+{template 'web/tips'}

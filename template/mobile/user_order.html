@@ -1,0 +1,60 @@
+{template 'header'}
+<div class="top-fixed">
+    <span class="pull-left"><a href="javascript:history.go(-1)" style="color:#333;"><i class="fa fa-chevron-left" style="margin-right:15px;"></i>我的订单</a></span>
+</div>
+<div class="container">
+    <style media="all" type="text/css">
+        body { background-color: #f0f0f0;}
+        a { color:#333;}
+        .btn { border-radius: 5px;width:25%;}
+        .btn-group-top-box{padding:10px 0; font-family:'Microsoft YaHei',Helvetica, Arial, sans-serif; text-align:center; width:100%;}
+        .btn-group-top{overflow:hidden; width:100%;}
+        .btn-group-top .btn{ -webkit-box-shadow:none; box-shadow:none; border-color:#ff8a66; color:#fff; background:#ff8a66; padding:6px;}
+        .btn-group-top .btn:hover{color:#FFF; background:#FF5722;}
+        .btn-group-top .btn.active{color:#FFF; background:#FF5722;}
+        .shift_row{ border-bottom: 1px dotted #CCC; margin-top:10px;}
+        .label { font-weight: 500;padding:5px 15px;}
+    </style>
+    <div class="btn-group-top-box" style="margin-top:60px;padding:0 10px;">
+        <div class="btn-group btn-group-top">
+            <a href="{php echo __MURL('user', array('act' => 'order', 'status' => '0'));}" class="btn btn-default {if $status == 0}active{/if}">进行中</a>
+            <a href="{php echo __MURL('user', array('act' => 'order', 'status' => '1'));}" class="btn btn-default {if $status == 1}active{/if}">已成功</a>
+            <a href="{php echo __MURL('user', array('act' => 'order', 'status' => '-1'));}" class="btn btn-default {if $status == -1}active{/if}">已失效</a>
+            <a href="{php echo __MURL('user', array('act' => 'order', 'status' => '2'));}" class="btn btn-default {if $status == 2}active{/if}">已退票</a>
+        </div>
+    </div>
+    {if $order_all}
+        {loop $order_all $order}
+        <div class="row shift_row" style="padding:10px;background-color: white;margin:10px;">
+            <a class="clearfix" href="{php echo __MURL('order', array('act' => 'info', 'order_id' => $order['id']))}">
+                <div class="col-xs-12">
+                    <p>
+                        {$order['start_station']['name']} <i class="icon_arrow-left"></i> {$order['end_station']['name']}
+                    </p>
+                    <p>
+                        共{$order['number']}张 ￥{$order['price']}元
+                    </p>
+                    <p>
+                    {php echo timeToStr($order['departure_time'], 'Y-m-d H:i')}
+                    </p>
+                    <p style=" position: absolute; right: 15px; bottom: 0px;">
+                        {if $order['status'] == 0}
+                        <span class="label label-warning">待付款</span>
+                        {elseif $order['status'] == 1}
+                        <span class="label label-success">购买成功</span>
+                        {elseif $order['status'] == 2}
+                        <span class="label label-default">已退票</span>
+                        {else}
+                        <span class="label label-danger">取消预定</span>
+                        {/if}
+                    </p>
+                </div>
+            </a>
+        </div>
+        {/loop}
+    {else}
+    <h2 class="text-center">没有满足条件的订单</h2>
+    {/if}
+</div>
+{template 'footerbar_user'}
+{template 'footer'}

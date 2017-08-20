@@ -1,0 +1,89 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{php echo __WURL($fr_model);}">{php echo $fr_web_page_title[$fr_model]}列表</a></li>
+    </ul>
+    <div class="panel panel-info">
+        <div class="panel-heading">筛选</div>
+        <div class="panel-body">
+            <form action="" method="post" class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">姓名</label>
+                    <div class="col-sm-6 col-md-8 col-lg-8 col-xs-12">
+                        <input type="text" name="name" value="{$_GPC['name']}" placeholder="姓名" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">身份证</label>
+                    <div class="col-sm-6 col-md-8 col-lg-8 col-xs-12">
+                        <input type="text" name="idcard" value="{$_GPC['idcard']}" placeholder="身份证" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">手机号码</label>
+                    <div class="col-sm-6 col-md-8 col-lg-4 col-xs-12">
+                        <input type="text" name="mobile" value="{$_GPC['mobile']}" placeholder="订单号" class="form-control" />
+                    </div>
+                    <div class="col-xs-12 col-sm-3 col-md-2 col-lg-2">
+                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                        <input type="hidden" name="token" value="{$_W['token']}"/>
+                        <input class="btn btn-primary" type="submit" name="export_submit" id="export_submit" value="导出">
+                    </div>
+                </div>
+            </form>
+    </div>
+</div>
+    <div style="padding-top:15px;"></div>
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                {php echo $fr_web_page_title[$fr_model]}列表
+            </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                    <tr>
+                        <th style="width:60px;">ID</th>						
+                        <th>姓名</th>
+                        <th>身份证</th>
+                        <th>手机号码</th>
+                        <th>管理员备注</th>
+                        <th style="text-align:center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if $result['list']}
+                    {loop $result['list'] $row}
+                        <tr>			
+                            <td class="row-first">{$row['id']}</td>
+                            <td>
+                                {if $row['uid']}
+                                <a href="{php echo url('mc/member/post', array('uid'=>$row['uid']));}" target="_blank">{if $row['name']}{$row['name']}{else}{$row['uid']}{/if}</a>
+                                {else}
+                                {if $row['name']}{$row['name']}{else}--{/if}
+                                {/if}
+                            </td>
+                            <td>{$row['idcard']}</td>
+                            <td>{if $row['phone']}{$row['phone']}{else}--{/if}</td>
+                            <td>{if $row['remarks']}{$row['remarks']}{else}--{/if}</td>
+                            <td align="center">
+                                <a href="{php echo __WURL('order', array('act' => 'lists', 'name' => $row['name'], 'idcard' => $row['idcard']));}" title="用户订单" class='btn btn-default btn-sm'><i class="fa fa-list"></i></a> 
+                                <a href="{php echo __WURL('order', array('act' => 'lists', 'name' => $row['name'], 'idcard' => $row['idcard'], 'export_submit' => 1));}" title="导出用户订单" class='btn btn-default btn-sm'><i class="fa fa-download"></i></a> 
+                                <a href="{php echo __WURL($fr_model, array('act' => 'voucher', 'id' => $row['uid']));}" title="代金券" class='btn btn-default btn-sm'><i class="fa fa-money"></i></a> 
+                                <a href="{php echo __WURL($fr_model, array('act' => 'add', 'id' => $row['id']));}" title="编辑" class='btn btn-default btn-sm'><i class="fa fa-edit"></i></a> 
+                                <a href="{php echo __WURL($fr_model, array('act' => 'delete', 'id' => $row['id']));}" title="删除" class='btn btn-default btn-sm' onclick="return confirm('确定要删除吗?')"><i class="fa fa-remove"></i></a>
+                            </td>
+                        </tr>
+                    {/loop}
+                    {else}
+                        <tr>
+                            <td colspan="5" align='center'>暂无数据</td>
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
+            {$result['pager']}
+        </div>
+    </div>
+</div>
+{template 'common/footer'}
+{template 'web/tips'}

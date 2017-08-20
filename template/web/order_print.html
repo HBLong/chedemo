@@ -1,0 +1,93 @@
+{template 'common/header'}
+<style type="text/css">
+.big-menu, .navbar-static-top, .breadcrumb, .footer{display:none;}
+body{ background: #FFF;}
+</style>
+<style type="text/css" media="print">.noprn { display:none }</style>
+<!--startprint-->
+{$print_div}
+<!--endprint-->
+<button type="button" value="打印" class="noprn btn btn-primary btn-block" onclick="preview();" ><i class="fa fa-print"></i> 打印</button>
+<script type="text/javascript">
+function preview() { 
+    var bdhtml = window.document.body.innerHTML; 
+    var sprnstr="<!--startprint-->"; 
+    var eprnstr="<!--endprint-->"; 
+    prnhtml = bdhtml.substr(bdhtml.indexOf(sprnstr)+17); 
+    prnhtml = prnhtml.substring(0, prnhtml.indexOf(eprnstr)); 
+    window.document.body.innerHTML=prnhtml; 
+    window.print();
+}
+$(function() {
+    $(".main-wrap").parent().addClass("col-xs-12 col-sm-12 col-lg-12").removeClass("col-sm-9 col-lg-10");
+});
+var order = {php echo json_encode($order_config);}
+
+window.onload = function() {
+    {$eval_script}
+};
+
+function _create_tickets_print(order_id) {
+    var print_bg = _create_print_bg(order_id);
+    //创建文本
+    var config_lable = order[order_id].config_lable;
+    var lable = config_lable.split("||,||");
+    if (lable.length <= 0) {
+        return false;
+    }
+    for (var i = 0; i < lable.length; i++) {
+        //获取标签参数
+        var text = lable[i].split(",");
+        if (text.length <= 0 || text[0] == null || typeof text[0] == "undefined" || text[0] == "") {
+            continue;
+        }
+        text[4] -= 10;
+        text[5] -= 10;
+        _create_text_box(print_bg, text[0], text[1], text[2], text[3], text[4], text[5]);
+    }
+}
+
+function _create_print_bg(order_id) {
+    var print_bg = document.createElement("div");
+    print_bg.setAttribute("id", "print_bg");
+    var print = document.getElementById("print"+order_id);
+    print.appendChild(print_bg);
+    //测试打印效果
+    //print_bg.style.background = 'url('+order[order_id].print_bg+')';
+    //设置车票样式
+    print_bg.style.width = order[order_id].width;
+    print_bg.style.height = order[order_id].height;
+    print_bg.style.zIndex = 1;
+    print_bg.style.border = "solid 1px #FFF";
+    print_bg.style.padding = "0";
+    print_bg.style.position = "relative";
+    print_bg.style.margin = "0";
+    return print_bg;
+}
+
+function _create_text_box(print_bg, id, text_content, text_width, text_height, x, y) {
+    //alert(id + '|' + text_content + '|' + text_width + '|' + text_height + '|' + x + '|' + y);
+    var text_box = document.createElement("div");
+    //设置属性
+    text_box.setAttribute("id", id);
+    print_bg.appendChild(text_box);
+    //设置样式
+    text_box.style.width = text_width + "px";
+    text_box.style.height = text_height + "px";
+    text_box.style.border = "0";
+    text_box.style.padding = "0";
+    text_box.style.margin = "0 auto";
+    text_box.style.position = "absolute";
+    text_box.style.fontSize = "12px";
+    text_box.style.top = y + "px";
+    text_box.style.left = x + "px";
+    text_box.style.wordBreak = "break-all";
+    //内容自动换行 严格断字
+    text_box.style.textAlign = "left";
+    //赋值
+    text_box.innerHTML = text_content;
+    return true;
+}
+</script>
+{template 'common/footer'}
+{template 'web/tips'}

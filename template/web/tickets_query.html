@@ -1,0 +1,283 @@
+{if !$_W['isajax']}
+{template 'common/header'}
+<style type="text/css">
+.big-menu, .navbar-static-top, .footer{display:none;}
+</style>
+<script>
+    var d = {php echo json_encode($d); };
+    var query_url = "{php echo __WURL('tickets', array('act' => 'query'))}";
+    var sell_url = "{php echo __WURL('tickets', array('act' => 'sell'))}";
+    var sell_check_url = "{php echo __WURL('tickets', array('act' => 'sell_check'))}";
+    var select_seat_url = "{php echo __WURL('tickets', array('act' => 'select_seat'))}";
+</script>
+<script src="{__JS__}/page-common.js"></script>
+<script src="{__JS__}/tickets.js"></script>
+<link href="{__CSS__}/tickets.css" rel="stylesheet" />
+<div class="main-wrap">
+    <form action="{php echo __WURL('tickets', array('act' => 'query'))}" class="form-inline searchboxinput" role="form" autocomplete="off" method="get">
+        <input type="hidden" name="c" value="site">
+        <input type="hidden" name="a" value="entry">
+        <input type="hidden" name="do" value="tickets">
+        <input type="hidden" name="act" value="query">
+        <input type="hidden" name="m" value="fr_cp" />
+        <div class="form-group s-inputbox">
+            <label for="startCityName">出发城市：</label>
+            <input required type="text" onfocus="this.select()" inputIsSubmit="1" class="form-control s-input s-ihover" value="{php echo $_GPC['startCityName']}" id="startCityName" name="startCityName" placeholder="输入中文/拼音">
+        </div>
+        <div class="form-group s-inputbox">
+            <label for="endCityName">到达城市：</label>
+            <input required type="text" onfocus="this.select()" inputIsSubmit="1" class="form-control s-input s-ihover" value="{php echo $_GPC['endCityName']}" id="endCityName" name="endCityName" placeholder="输入中文/拼音">
+        </div>
+        <div class="form-group">
+            <label for="startDate">发车日期：</label>
+            <input type="text" value="{$start_date}" class="form-control" id="startDate" name="startDate">
+        </div>
+        <button type="submit" class="btn btn-default"><i class="fa fa-search"></i>查询</button>
+    </form>
+    <div class="hot">
+        <h3>热门路线</h3>
+        <p class="clearfix">
+        {loop $hot_route $route}
+        <a href="{php echo __WURL('tickets', array('act' => 'query', 'start_station_id' => $route['start_station']['id'], 'end_station_id' => $route['end_station']['id']));}">
+            {$route['start_station']['name']} -> {$route['end_station']['name']}
+        </a>
+        {/loop}
+        </p>
+    </div>
+    <input type="hidden" id="hideStartCityName" value="{php echo $_GPC['startCityName']}"/>
+    <input type="hidden" id="hideEndCityName" value="{php echo $_GPC['endCityName']}"/>
+    <input type="hidden" id="hideStartStationId" value="{$_GPC['start_station_id']}" />
+    <input type="hidden" id="hideEndStationId" value="{$_GPC['end_station_id']}" />
+    <input type="hidden" id="hideStartDate" value="{$start_date}"/>
+    <input type="hidden" id="hideOrderBy" value="1"/>
+    <input type="hidden" id="isSearch" value="false"/>
+
+    <div class="h10"></div>
+    <div class="ticketlist clearfix">
+        <div class="queryhead clearfix">
+            <h1>{php echo $_GPC['startCityName']}→{php echo $_GPC['endCityName']}</h1>
+            <label>车票信息<em id="scheduleCount">0</em>条</label>
+            <div style="display:none;" class="times">
+                    <em class="time-ico">时间</em>
+                    <a href="#">与汽车站同步预售，可售<b id="preDate">{$fr_cp_settings['day']}</b>天</a>
+            </div>
+        </div>
+        <div class="calendar_tab clearfix">
+            <div class="cal_left">
+                <a class="icon_cal_left disable" id="buttonNext"></a>
+            </div>
+            <div id="calendar_ul" class="calendar_ul">
+                <ul style="position: absolute;">
+                    {loop $days $dateindex $day}
+                    <li dateindex="{$dateindex}" title="{$day['ydate']}" {if $start_date == $day['ydate']} class="current"{/if}>
+                        <p class="calendar_date">
+                            {$day['date']}<b {if $dateindex == 1} class="red"{/if}>{$day['str']}</b> <span>{$day['week']}</span>
+                        </p>
+                    </li>
+                    {/loop}
+                </ul>
+            </div>
+            <div class="cal_right">
+                <a class="icon_cal_right" id="buttonPreview"></a>
+            </div>
+        </div>
+        <div class="orderdiv">
+            <div class="h10"></div>
+            <!--车站筛选条件-->
+            <div class="searchselect layout">
+                <div class="timebox hidden">
+                    <div class="tt">发车时间：</div>
+                    <ul>
+                        <li class="no_lim"><div class="on"><span>不限</span></div></li>
+                        <li><label for="上午(06:00~12:00)"> <span datatype="06:00~12:00" name="time" class="icbox"></span><span class="type_txt">上午(06:00~12:00)</span> <input type="checkbox"></label></li>
+                        <li><label for="下午(12:00~18:00)"> <span datatype="12:00~18:00" name="time" class="icbox"></span><span class="type_txt">下午(12:00~18:00)</span><input type="checkbox"></label></li>
+                        <li><label for="晚上(18:00~24:00)"> <span datatype="18:00~24:00" name="time" class="icbox"></span><span class="type_txt">晚上(18:00~24:00)</span><input type="checkbox"></label></li>
+
+                    </ul>
+                </div>
+                <span style="display: block;" id="moreStation" class="control down"><span>更多车站</span></span>
+                <div class="clear"></div>
+                <div class="morebox" style="height: 60px;">
+                    <div class="tt">始发站点：</div>
+                    <ul></ul>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+            <div id="content">
+                {/if}
+                {if $result}
+                <div class="h10"></div>
+                <div class="lineitem">
+                    <div class="head">
+                        <ul>
+                            <li class="first"><span id="startTimeOrderBy" class="icon i2">出发时间</span></li>
+                            <li class="second">出发/到达</li>
+                            <li class="third">车型/车次</li>
+                            <li class="fourth"><span id="ticketPriceOrderBy" class="icon i2">票价</span></li>
+                            <li class="fifth">余票</li>
+                            <li class="six">操作</li>
+                        </ul>
+                    </div>
+                    {loop $result $key $shifts}
+                    <div class="content" index="{php echo ($key + 1)}" {if $key == 0} style="display:block" {else} style="display:none"{/if}>
+                         {loop $shifts $row}
+                         <div class="box">
+                            <ul>
+                                <li class="first">
+                                    <p class="time">{$row['time']}</p>
+                                </li>
+                                <li class="second"><span class="start">发</span>
+                                    <p>
+                                        <a href="javascript:;" class="color3 startStation">{$row['start_station']['name']}</a>
+                                    </p> <span class="end">到 </span>
+                                    <p>
+                                        <a class="color3">{$row['end_station']['name']}</a>
+                                    </p></li>
+                                <li class="third">
+                                    <p class="th_o">{$fr_cp_settings['vehicle_type'][$row['vehicle']['vehicle_type']]}</p>
+                                    <p class="th_t">{$row['vehicle']['license_plate']}</p>
+                                </li>
+                                <li class="fourth">
+                                    <span class="icon i2"><span class="price"><em>¥</em><span>{$row['ticket_price']}</span></span></span>
+                                </li>
+                                <li class="fifth pt15">
+                                    {if $row['surplus_votes'] > 0}
+                                    <span class="green">{$row['surplus_votes']}</span>
+                                    {else}
+                                    <span class="gray">无票</span>
+                                    {/if}
+                                </li>
+                                <li class="six pt5">
+                                    <a title="下单" data-id="{$row['shift_id']}" data-surplus="{$row['surplus_votes']}" data-start="{$row['start_station']['id']}" data-end="{$row['end_station']['id']}" class="btn_y80 buy-btn modal-sell">下 单</a>
+                                </li>
+                            </ul>
+                        </div>
+                        {/loop}
+                    </div>
+                    {/loop}
+                </div>
+                <div class="h30"></div>
+                <input type="hidden" id="dataCount" value="{$dataCount}"/>
+                <input type="hidden" id="pageCount" value="{$pageCount}"/>
+                <div class="m-page-box">
+                    <div class="m-page">
+
+                    </div>
+                </div>
+                <ul style="display:none;" id="station_list">
+                    <input type="hidden" id="stationList" value="{php echo count($start_station);}"/>
+                    <li class="no_lim"><div class="on"><span>不限</span></div></li>
+                    {loop $start_station $station}
+                    <li>
+                        <label>
+                            <span class="icbox" name="startplace" location="" datatype="{$station['name']}"></span>
+                            <span class="type_txt">{$station['name']}</span><input type="checkbox">
+                        </label>
+                    </li>
+                    {/loop}
+                </ul>
+                {else}
+                <div class="promptList promptList2">
+                    <div class="prompt_ic">
+                        <i class="prompt_img"></i>
+                        <span class="prompt_txt">
+                            没有符合您查询的车次<br>
+                            请您重新查询。
+                        </span>
+                    </div>
+                </div>
+                {/if}
+                {if !$_W['isajax']}
+            </div>
+            <div id="localSearchNoResult" class="promptList  promptList2" style="display:none;">
+                <div class="prompt_ic">
+                    <i class="prompt_img"></i>
+                    <span class="prompt_txt">
+                        没有符合您查询的车次<br>
+                        请您重新查询。
+                    </span>
+                </div>
+            </div>
+            <div id="timeOutResult" class="promptList  promptList4" style="display:none;">
+                <div class="prompt_ic">
+                    <i class="prompt_img"></i>
+                    <span class="prompt_txt">
+                        很抱歉，由于网络延迟，<br>
+                        请您点&lt;点击重试&gt;按钮，刷新。
+                    </span>
+                </div>
+                <div class="prompt_btn"><a class="btn_bs200" href="javascript:{$('#isSearch').val(true);_obj.paging.search(1);}">点击重试</a></div>
+            </div>
+            <div class="loading" id="loadingImage" style="display:none;">
+                <div class="ld">
+                    请稍等!<br> 您查询的结果正在搜索中...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="cityToolBar" class="sug" style="position: absolute; z-index: 9998; width: 228px; height: 220px; display: none;"></div>
+<script src="{__JS__}/underscore.js"></script>
+<script src="{__JS__}/citys.js"></script>
+<script type="text/javascript">
+    $("#startCityName").citys({
+        url: '{php echo __WURL("tickets", array("act" => "endCitys"))}'
+    });
+    $(function() {
+        $(".main-wrap").parent().addClass("col-xs-12 col-sm-12 col-lg-12").removeClass("col-sm-9 col-lg-10");
+        $(".icon_cal_right").on("click", function() {
+            var t = $(".calendar_ul ul li").length, n = (t - 11) * 100, r = $(".calendar_ul ul").position().left * -1;
+            if (r >= n) {
+                $(".icon_cal_right").addClass("disable");
+                return;
+            }
+            r += 100, r > 0 && $(".icon_cal_left").removeClass("disable"), r >= n && $(".icon_cal_right").addClass("disable"),
+                    $(".calendar_ul ul").css("left", r * -1 + "px");
+        });
+        $(".icon_cal_left").on("click", function() {
+            var t = $(".calendar_ul ul").position().left * -1;
+            if (t <= 0) {
+                $(".icon_cal_left").addClass("disable");
+                return;
+            }
+            t -= 100, t <= 0 && $(".icon_cal_left").addClass("disable"), $(".calendar_ul ul").css("left", t * -1 + "px"),
+                    $(".icon_cal_right").removeClass("disable");
+        });
+        $("#isSearch").val("true"), selectDate($("#hideStartDate").val()), timeBox();
+        
+    });
+    require(["datetimepicker"], function() {
+        $(function() {
+            var option = {
+                lang: "zh",
+                step: "10",
+                timepicker: false,
+                closeOnDateSelect: false,
+                minDate: '{php echo date("Y-m-d")}',
+                maxDate: '{$end_date}',
+                formatDate: "Y-m-d",
+                format: "Y-m-d",
+            };
+            $("#startDate").datetimepicker(option);
+        });
+    });
+    require(['{__JS__}/sell.js', 'bootstrap'], function(sell){
+            sell.init();
+    });
+</script>
+<script type="text/template" id="endCitys-template">
+    <ul>
+    <p>输入中文/拼音/或↑↓键选择</p>
+    <% _.each(data, function(city,index,obj) {%>
+    <% if(index== 0){%>
+    <li class="hover" title="<%=city.name%>"><i><%=city.name%></i><b><%=city.provinceName%></b></li>
+    <%}else{%>
+    <li title="<%=city.name%>"><i><%=city.name%></i><b><%=city.provinceName%></b></li>
+    <%}%>
+    <%});%>	
+    </ul>
+</script>
+{template 'common/footer'}
+{template 'web/tips'}
+{/if}

@@ -1,0 +1,191 @@
+{template 'common/header'}
+<div class="main">
+	<ul class="nav nav-tabs">
+            <li><a href="{php echo __WURL($fr_model);}">{php echo $fr_web_page_title[$fr_model]}列表</a></li>
+            <li class="active"><a href="{php echo __WURL($fr_model, array('act' => 'add', 'area_id' => $area_id));}">添加{php echo $fr_web_page_title[$fr_model]}</a></li>
+	</ul>
+    
+    <div class="">
+	<form action="" class="form-horizontal form" method="post" autocomplete="off">
+		<input type="hidden" name="id" value="{$item['id']}">
+		<input type="hidden" name="token" value="{$_W['token']}" />
+		<input type="hidden" name="act" value="update" />
+		<div class="panel panel-default">
+                        <div class="panel-heading" id="paoject_info">
+                            {if !empty($id)}修改{else}添加{/if}{php echo $fr_web_page_title[$fr_model]}信息
+			</div>
+			<div class="panel-body">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">线路名称</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="postdata[name]" autocomplete="off" value="{$item['name']}" />
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">始发站</label>
+                                    <div class="col-sm-8">
+                                        <div class="row row-fix selectList">
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <select name="province_id" data-id='fr_city' class="form-control fr_area fr_province">
+                                                        <option value="0">省/直辖市</option>
+                                                        {loop $province $area_item}
+                                                        <option value="{$area_item['id']}" {if $area_item['id'] == $item['province_id']} selected="selected"{/if}>{$area_item['name']}</option>
+                                                        {/loop}
+                                                    </select>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <select name="city_id" data-id='fr_district' class="form-control fr_area fr_city">
+                                                        <option value="0">市</option>
+                                                        {loop $city $area_item}
+                                                        <option value="{$area_item['id']}" {if $area_item['id'] == $item['city_id']} selected="selected"{/if}>{$area_item['name']}</option>
+                                                        {/loop}
+                                                    </select>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <select name="district_id" class="form-control fr_area fr_district">
+                                                        <option value="0">区/县</option>
+                                                        {loop $district $area_item}
+                                                        <option value="{$area_item['id']}" {if $area_item['id'] == $item['district_id']} selected="selected"{/if}>{$area_item['name']}</option>
+                                                        {/loop}
+                                                    </select>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <select name="postdata[start_station_id]" data-placeholder="请选择始发站" class="form-control station">
+                                                        <option value="0">请选择始发站</option>
+                                                        {loop $station_all $station}
+                                                        <option value="{$station['id']}" {if $station['id'] == $item['start_station_id']} selected="selected"{/if}>{$station['name']}</option>
+                                                        {/loop}
+                                                    </select>
+                                                </div>
+                                        </div>
+                                        
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">终点站</label>
+                                    <div class="col-sm-8">
+                                        <div class="row row-fix selectList">
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <select name="province_id" data-id='fr_city' class="form-control fr_area fr_province">
+                                                        <option value="0">省/直辖市</option>
+                                                        {loop $province $area_item}
+                                                        <option value="{$area_item['id']}" {if $area_item['id'] == $item['province_id']} selected="selected"{/if}>{$area_item['name']}</option>
+                                                        {/loop}
+                                                    </select>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <select name="city_id" data-id='fr_district' class="form-control fr_area fr_city">
+                                                        <option value="0">市</option>
+                                                        {loop $city $area_item}
+                                                        <option value="{$area_item['id']}" {if $area_item['id'] == $item['city_id']} selected="selected"{/if}>{$area_item['name']}</option>
+                                                        {/loop}
+                                                    </select>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <select name="district_id" class="form-control fr_area fr_district">
+                                                        <option value="0">区/县</option>
+                                                        {loop $district $area_item}
+                                                        <option value="{$area_item['id']}" {if $area_item['id'] == $item['district_id']} selected="selected"{/if}>{$area_item['name']}</option>
+                                                        {/loop}
+                                                    </select>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                                                    <select name="postdata[end_station_id]" data-placeholder="请选择终点站" class="form-control station">
+                                                        <option value="0">请选择终点站</option>
+                                                        {loop $station_all $station}
+                                                        <option value="{$station['id']}" {if $station['id'] == $item['end_station_id']} selected="selected"{/if}>{$station['name']}</option>
+                                                        {/loop}
+                                                    </select>
+                                                </div>
+                                        </div>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">推荐</label>
+                                    <div class="col-sm-8">
+                                        <label class="radio-inline"><input type="radio" name="postdata[recommend]" value="1" {if 1 == $item['recommend']} checked{/if} /> 是</label>
+                                        <label class="radio-inline"><input type="radio" name="postdata[recommend]" value="0" {if 0 == $item['recommend']} checked{/if} /> 否</label>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否需要购买责任意外险</label>
+                                    <div class="col-sm-8">
+                                        <label class="radio-inline"><input type="radio" name="postdata[insurance]" value="1" {if 1 == $item['insurance']} checked{/if} /> 是</label>
+                                        <label class="radio-inline"><input type="radio" name="postdata[insurance]" value="0" {if 0 == $item['insurance']} checked{/if} /> 否</label>
+                                    </div>
+				</div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">路线负责人手机号码</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="postdata[person_phone]" value="{$item['person_phone']}" />
+                                        <span class="help-block">接收余票短信通知号码</span>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">其他说明</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control" name="postdata[explain]" rows='5'>{$item['explain']}</textarea>
+                                    </div>
+				</div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户购票通知短信内容</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control" name="postdata[sms_content]" rows='5'>{$item['sms_content']}</textarea>
+                                        <span class="help-block">路线：{{LUXIAN}}；发车时间：{{SHIJIAN}}；购票数：{{PIAO}}；</span>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">&nbsp;</label>
+                                    <div class="col-sm-9">
+                                        <button type="submit" class="btn btn-primary col-lg-1" name="submit" value="提交">提交</button>
+                                    </div>
+				</div>
+			</div>
+		</div>
+	</form>
+    </div>
+</div>
+<script type="text/javascript">
+$(".fr_area").on("change", function() {
+    var _this = $(this), id = _this.data('id');
+    if (!id) {
+        getStation(_this);
+        return ;
+    }
+    _this.parents(".selectList").find(".fr_district").html('<option value="0">'+ _this.parents(".selectList").find(".fr_district").children('option').eq(0).html()+'</option>');
+    var val = _this.val();
+    if (val == 0) {
+        _this.parents(".selectList").find("."+id).html('<option value="0">'+_this.parents(".selectList").find("."+id).children('option').eq(0).html()+'</option>');
+        getStation(_this);
+        return false;
+    }
+    $.post('{php echo __WURL("station", array("act" => "getarea"));}', {pid:val, act:'getarea'}, function (res){
+        if (res) {
+            var html = '<option value="0">'+_this.parents(".selectList").find("."+id).children('option').eq(0).html()+'</option>';
+            $.each(res, function(i, _item) {
+                html += '<option value="'+_item.id+'">'+_item.name+'</option>';
+            });
+            _this.parents(".selectList").find("."+id).html(html);
+            getStation(_this);
+        }
+    }, 'JSON');
+});
+function getStation(obj) {
+    var province_id = obj.parents(".selectList").find(".fr_province").val();
+    var city_id = obj.parents(".selectList").find(".fr_city").val();
+    var district_id = obj.parents(".selectList").find(".fr_district").val();
+    var data = {province_id:province_id, city_id:city_id, district_id:district_id};
+    $.post('{php echo __WURL("station", array("act" => "getstation"));}', data, function (res){
+        var station = obj.parents(".selectList").find(".station");
+        var html = '<option value="0">'+station.children('option').eq(0).html()+'</option>';
+        if (res) {
+            $.each(res, function(i, _item) {
+                html += '<option value="'+_item.id+'">'+_item.name+'</option>';
+            });
+        }
+        station.html(html);
+    }, 'JSON');
+}
+</script>
+{template 'common/footer'}
+{template 'web/tips'}

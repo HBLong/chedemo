@@ -1,0 +1,52 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{php echo __WURL($fr_model);}">{php echo $fr_web_page_title[$fr_model]}列表</a></li>
+        <li><a href="{php echo __WURL($fr_model, array('act' => 'add'));}">添加{php echo $fr_web_page_title[$fr_model]}</a></li>
+        <li><a href="{php echo __WURL('shifttime');}">发车时间设置</a></li>
+    </ul>
+
+    <div style="padding-top:15px;"></div>
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                {php echo $fr_web_page_title[$fr_model]}列表
+            </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                    <tr>
+                        <th style="width:60px;">ID</th>						
+                        <th>线路名称</th>
+                        <th>始发站</th>
+                        <th>终点站</th>
+                        <th style="text-align:center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if $result['list']}
+                    {loop $result['list'] $row}
+                        <tr>			
+                            <td class="row-first">{$row['id']}</td>
+                            <td>{$row['name']}</td>
+                            <td>{$row['start_station_name']}</td>
+                            <td>{$row['end_station_name']}</td>
+                            <td align="center">
+                                <a href="{php echo __WURL('shift', array('act' => 'lists', 'route_id' => $row['id']));}" title="{$row['start_station_name']}->{$row['end_station_name']} 班次列表" class='btn btn-default btn-sm'><i class="fa fa-list"></i></a> 
+                                <a href="{php echo __WURL($fr_model, array('act' => 'add', 'id' => $row['id']));}" title="编辑" class='btn btn-default btn-sm'><i class="fa fa-edit"></i></a> 
+                                <a href="{php echo __WURL($fr_model, array('act' => 'delete', 'id' => $row['id']));}" title="删除" class='btn btn-default btn-sm' onclick="return confirm('确定删除（同时删除该路线下的所有班次以及订单信息）?')"><i class="fa fa-remove"></i></a>
+                            </td>
+                        </tr>
+                    {/loop}
+                    {else}
+                        <tr>
+                            <td colspan="4" align='center'>暂无数据</td>
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
+            {$result['pager']}
+        </div>
+    </div>
+</div>
+{template 'common/footer'}
+{template 'web/tips'}

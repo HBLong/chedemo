@@ -1,0 +1,63 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{php echo __WURL($fr_model);}">短信记录列表</a></li>
+    </ul>
+
+    <div class="row">
+        <a class="btn btn-primary {if is_null($status)} disabled{/if}" href="{php echo __WURL('sms');}">全部</a>
+        <a class="btn btn-primary {if $status == '1'} disabled{/if}" href="{php echo __WURL('sms', array('status' => '1'));}">成功</a>
+        <a class="btn btn-primary {if $status == '0'} disabled{/if}" href="{php echo __WURL('sms', array('status' => '0'));}">失败</a>
+    </div>
+    <div style="padding-top:15px;"></div>
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                短信记录列表<a href="{php echo __WURL('sms', array('act' => 'delete', 'id' => 'all'));}" class="pull-right">清空记录</a>
+            </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                    <tr>
+                        <th style="width:60px;">ID</th>						
+                        <th>手机号码</th>
+                        <th>短信内容</th>
+                        <th>发送时间</th>
+                        <th>状态</th>
+                        <th>提示信息</th>
+                        <th style="text-align:center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if $result['list']}
+                    {loop $result['list'] $row}
+                        <tr>			
+                            <td class="row-first">{$row['id']}</td>
+                            <td>{$row['mobile']}</td>
+                            <td><pre style="white-space: initial;">{$row['content']}</pre></td>
+                            <td>{php echo timeToStr($row['createtime'])}</td>
+                            <td>
+                                {if $row['status'] == 1}
+                                <span class="label label-success">成功</span>
+                                {else}
+                                <span class="label label-danger">失败</span>
+                                {/if}
+                            </td>
+                            <td>{$row['error_msg']}</td>
+                            <td align="center">
+                                <a href="{php echo __WURL('sms', array('act' => 'delete', 'id' => $row['id']));}" title="删除" class='btn btn-default btn-sm' onclick="return confirm('确定要删除吗?')"><i class="fa fa-remove"></i></a>
+                            </td>
+                        </tr>
+                    {/loop}
+                    {else}
+                        <tr>
+                            <td colspan="7" align='center'>暂无数据</td>
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
+            {$result['pager']}
+        </div>
+    </div>
+</div>
+{template 'common/footer'}
+{template 'web/tips'}

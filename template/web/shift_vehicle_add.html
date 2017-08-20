@@ -1,0 +1,48 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li><a href="{php echo __WURL('shift', array('route_id' => $shift_info['route_id']));}">路线列表</a></li>
+        <li class="active"><a href="{php echo __WURL($fr_model, array('shift_id' => $shift_id));}">{$shift_info['route']['name']} {$shift_info['time']} 班次司机列表</a></li>
+        <li><a href="{php echo __WURL($fr_model, array('act' => 'add', 'shift_id' => $shift_id));}">添加 {$shift_info['route']['name']} {$shift_info['time']} 班次司机</a></li>
+    </ul>
+
+    <div class="">
+        <form action="" class="form-horizontal form" method="post" autocomplete="off">
+            <input type="hidden" name="id" value="{$item['id']}">
+            <input type="hidden" name="postdata[shift_id]" value="{$shift_id}">
+            <input type="hidden" name="token" value="{$_W['token']}" />
+            <input type="hidden" name="act" value="update" />
+            <div class="panel panel-default">
+                <div class="panel-heading" id="paoject_info">
+                    {if !empty($id)}修改{else}添加{/if} {$shift_info['route']['name']} {$shift_info['time']} 班次司机
+                </div>
+                <div class="panel-body">
+                    <div class="form-group mobile">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">排班日期</label>
+                        <div class="col-sm-8">
+                            {php echo tpl_form_field_date("postdata[work_date]", $item['work_date']);}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">选择车辆</label>
+                        <div class="col-sm-8">
+                            <select name="postdata[vehicle_id]" id="vehicle_id" class="form-control">
+                                {loop $vehicle_all $vehicle}
+                                <option value="{$vehicle['id']}" {if $vehicle['id'] == $item['vehicle_id']} selected{/if}>车牌号：{$vehicle['license_plate']}；司机姓名：{$vehicle['driver_name']}</option>
+                                {/loop}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">&nbsp;</label>
+                        <div class="col-sm-9">
+                            <button type="submit" class="btn btn-primary col-lg-1" name="submit" value="提交">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{template 'common/footer'}
+{template 'web/tips'}

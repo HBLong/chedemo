@@ -1,0 +1,89 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{php echo __WURL($fr_model);}">{php echo $fr_web_page_title[$fr_model]}列表</a></li>
+        <li><a href="{php echo __WURL($fr_model, array('act' => 'add'));}">添加{php echo $fr_web_page_title[$fr_model]}</a></li>
+    </ul>
+    <div class="panel panel-info">
+        <div class="panel-heading">筛选</div>
+        <div class="panel-body">
+            <form action="./index.php" method="get" class="form-horizontal" role="form">
+                <input type="hidden" name="c" value="site">
+                <input type="hidden" name="a" value="entry">
+                <input type="hidden" name="do" value="{$fr_model}">
+                <input type="hidden" name="m" value="fr_cp" />
+                <input name="token" type="hidden" value="{$_W['token']}" />
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">所属车站</label>
+                    <div class="col-sm-8">
+                        <div class="row row-fix">
+                                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                    <select name="station_id" class="form-control">
+                                        <option value="0">选择车站</option>
+                                        {loop $station $station_item}
+                                        <option value="{$station_item['id']}">{$station_item['name']}</option>
+                                        {/loop}
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                    <input type="text" name="license_plate" class="form-control" value="" placeholder="车牌号" />
+                                </div>
+                                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                    <input type="text" name="driver_name" class="form-control" value="" placeholder="司机姓名" />
+                                </div>
+                        </div>
+                    </div>
+                    <div class=" col-xs-12 col-sm-2 col-lg-2">
+                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div style="padding-top:15px;"></div>
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                {php echo $fr_web_page_title[$fr_model]}列表
+            </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                    <tr>					
+                        <th>车牌号</th>
+                        <th>司机姓名</th>
+                        <th>司机电话</th>
+                        <th>座位数</th>
+                        <th>汽车等级</th>
+                        <th>所属车站</th>
+                        <th style="text-align:center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if $result['list']}
+                    {loop $result['list'] $row}
+                        <tr>
+                            <td class="row-first">{$row['license_plate']}</td>
+                            <td>{$row['driver_name']}</td>
+                            <td>{$row['driver_phone']}</td>
+                            <td>{$row['seat_numbers']}</td>
+                            <td>{$fr_cp_settings['vehicle_type'][$row['vehicle_type']]}</td>
+                            <td>{php echo getDataById('station', $row['station_id'], 'name', '--')}</td>
+                            <td align="center">
+                                <a href="{php echo __WURL($fr_model, array('act' => 'add', 'id' => $row['id']));}" title="编辑" class='btn btn-default btn-sm'><i class="fa fa-edit"></i></a> 
+                                <a href="{php echo __WURL($fr_model, array('act' => 'delete', 'id' => $row['id']));}" title="删除" class='btn btn-default btn-sm' onclick="return confirm('确定要删除吗?')"><i class="fa fa-remove"></i></a>
+                            </td>
+                        </tr>
+                    {/loop}
+                    {else}
+                        <tr>
+                            <td colspan="6" align='center'>暂无数据</td>
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
+            {$result['pager']}
+        </div>
+    </div>
+</div>
+{template 'common/footer'}
+{template 'web/tips'}

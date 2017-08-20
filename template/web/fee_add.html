@@ -1,0 +1,60 @@
+{template 'common/header'}
+<div class="main">
+	<ul class="nav nav-tabs">
+        <li><a href="{url 'profile/module/setting' array('m' => 'fr_cp')}">系统设置</a></li>
+        <li><a href="{php echo __WURL('fee');}">退票/改签设置</a></li>
+        <li class="active"><a href="{php echo __WURL('fee', array('act' => 'add'));}">添加退票/改签设置</a></li>
+	</ul>
+    
+    <div class="">
+	<form action="" class="form-horizontal form" method="post">
+		<input type="hidden" name="id" value="{$item['id']}">
+		<input type="hidden" name="token" value="{$_W['token']}" />
+		<input type="hidden" name="act" value="update" />
+		<div class="panel panel-default">
+                        <div class="panel-heading" id="paoject_info">
+                            {if !empty($id)}修改{else}添加{/if}退票/改签设置
+			</div>
+			<div class="panel-body">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">时间</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="postdata[time]" autocomplete="off" value="{$item['time']}" />
+                                        <span class="help-block">单位：分钟；</span>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">类型</label>
+                                    <div class="col-sm-8">
+                                        <label class="radio-inline"><input type="radio" class="notice_type" name="postdata[type]" value="0" {if 0 == $item['type']} checked{/if} /> 退票</label>
+                                        <label class="radio-inline"><input type="radio" class="notice_type" name="postdata[type]" value="1" {if 1 == $item['type']} checked{/if} /> 改签</label>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">计费方式</label>
+                                    <div class="col-sm-8">
+                                        <label class="radio-inline"><input type="radio" class="notice_type" name="postdata[fee_type]" value="0" {if 0 == $item['type']} checked{/if} /> 百分比</label>
+                                        <label class="radio-inline"><input type="radio" class="notice_type" name="postdata[fee_type]" value="1" {if 1 == $item['type']} checked{/if} /> 固定金额</label>
+                                        <span class="help-block">百分比指订单金额的百分比</span>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">手续费</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="postdata[fee]" autocomplete="off" value="{$item['fee']}" />
+                                        <span class="help-block">固定金额单位：元，百分比自行计算</span>
+                                    </div>
+				</div>
+				<div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">&nbsp;</label>
+                                    <div class="col-sm-9">
+                                        <button type="submit" class="btn btn-primary col-lg-1" name="submit" value="提交">提交</button>
+                                    </div>
+				</div>
+			</div>
+		</div>
+	</form>
+    </div>
+</div>
+{template 'common/footer'}
+{template 'web/tips'}

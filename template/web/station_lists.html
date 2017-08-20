@@ -1,0 +1,116 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{php echo __WURL($fr_model);}">{php echo $fr_web_page_title[$fr_model]}列表</a></li>
+        <li><a href="{php echo __WURL($fr_model, array('act' => 'add'));}">添加{php echo $fr_web_page_title[$fr_model]}</a></li>
+    </ul>
+    <div class="panel panel-info">
+        <div class="panel-heading">筛选</div>
+        <div class="panel-body">
+            <form action="./index.php" method="get" class="form-horizontal" role="form">
+                <input type="hidden" name="c" value="site">
+                <input type="hidden" name="a" value="entry">
+                <input type="hidden" name="do" value="{$fr_model}">
+                <input type="hidden" name="m" value="fr_cp" />
+                <input name="token" type="hidden" value="{$_W['token']}" />
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">路线</label>
+                    <div class="col-sm-8">
+                        <div class="row row-fix">
+                                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                    <select name="province_id" id="fr_province" data-id='fr_city' class="form-control fr_area">
+                                        <option value="0">省/直辖市</option>
+                                        {loop $province $area_item}
+                                        <option value="{$area_item['id']}">{$area_item['name']}</option>
+                                        {/loop}
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                    <select name="city_id" id="fr_city" data-id='fr_district' class="form-control fr_area">
+                                        <option value="0">市</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                    <select name="district_id" id="fr_district" class="form-control fr_area">
+                                        <option value="0">区/县</option>
+                                    </select>
+                                </div>
+                        </div>
+                    </div>
+                    <div class=" col-xs-12 col-sm-2 col-lg-2">
+                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div style="padding-top:15px;"></div>
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                {php echo $fr_web_page_title[$fr_model]}列表
+            </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                    <tr>					
+                        <th>{php echo $fr_web_page_title[$fr_model]}名称</th>
+                        <th>省份</th>
+                        <th>市</th>
+                        <th>县/区</th>
+                        <th>排序</th>
+                        <th style="text-align:center;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if $result['list']}
+                    {loop $result['list'] $row}
+                        <tr>
+                            <td class="row-first">{$row['name']}</td>
+                            <td>{php echo getDataById('area', $row['province_id'], 'name', '--')}</td>
+                            <td>{php echo getDataById('area', $row['city_id'], 'name', '--')}</td>
+                            <td>{php echo getDataById('area', $row['district_id'], 'name', '--')}</td>
+                            <td>{$row['sort']}</td>
+                            <td align="center">
+                                <a href="{php echo __WURL($fr_model, array('act' => 'add', 'id' => $row['id']));}" title="编辑" class='btn btn-default btn-sm'><i class="fa fa-edit"></i></a> 
+                                <a href="{php echo __WURL($fr_model, array('act' => 'delete', 'id' => $row['id']));}" title="删除" class='btn btn-default btn-sm' onclick="return confirm('确定要删除吗（将同时删除该车站所有相关信息，包括路线，班次，订单）?')"><i class="fa fa-remove"></i></a>
+                            </td>
+                        </tr>
+                    {/loop}
+                    {else}
+                        <tr>
+                            <td colspan="7" align='center'>暂无数据</td>
+                        </tr>
+                    {/if}
+                </tbody>
+            </table>
+            {$result['pager']}
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(".fr_area").on("change", function() {
+    var id = $(this).data('id');
+    if (!id) {
+        return ;
+    }
+    $("#fr_district").html('<option value="0">'+$("#fr_district").children('option').eq(0).html()+'</option>');
+    var val = $(this).val();
+    if (val == 0) {
+        $("#"+id).html('<option value="0">'+$("#"+id).children('option').eq(0).html()+'</option>');
+        return false;
+    }
+    $.post('{php echo __WURL("station", array("act" => "getarea"));}', {pid:val, act:'getarea'}, function (res){
+        if (res) {
+            var html = '<option value="0">'+$("#"+id).children('option').eq(0).html()+'</option>';
+            $.each(res, function(i, _item) {
+                html += '<option value="'+_item.id+'">'+_item.name+'</option>';
+            });
+            $("#"+id).html(html);
+        }
+    }, 'JSON')
+    
+})    
+</script>
+{template 'common/footer'}
+{template 'web/tips'}
